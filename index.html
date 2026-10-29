@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GeoWS — Akun WhatsApp & Email Resmi</title>
+<style>
+  :root {
+    --bg: #08080a;
+    --card: #121216;
+    --card-hover: #1a1a21;
+    --accent: #ff66b2;
+    --accent-hover: #ff3399; 
+    --text: #ffffff;
+    --muted: #a1a1aa;
+    --border: #27272a;
+    --input-bg: #1c1c22;
+    --usdt-color: #26a17b;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle at 50% 0%, rgba(255, 102, 178, 0.08) 0%, transparent 50%);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* PROGRESS BAR BROWSER (Pengganti Loading Screen) */
+  #browserProgressBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background-color: var(--accent);
+    width: 0%;
+    z-index: 9999;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    box-shadow: 0 0 10px var(--accent);
+    opacity: 0;
+  }
+
+  /* NAVBAR */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(8, 8, 10, 0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px; gap: 15px;
+  }
+  .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .logo-img { height: 48px; width: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px rgba(255, 102, 178, 0.3); }
+  .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; }
+  .logo-text span { color: var(--accent); text-shadow: 0 0 8px rgba(255, 102, 178, 0.5); }
+  
+  .nav-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+  
+  /* LANGUAGE SELECTOR */
+  .lang-selector {
+    display: flex; gap: 8px; align-items: center;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 999px;
+  }
+  .lang-btn { background: transparent; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.5; transition: 0.3s; padding: 4px; }
+  .lang-btn.active { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 5px var(--accent)); }
+
+  /* NAV AUTH BUTTONS */
+  .auth-btns { display: flex; gap: 10px; align-items: center; }
+  .btn-outline, .btn-solid {
+    padding: 6px 16px; border-radius: 999px; font-weight: 700; font-size: 0.85rem;
+    cursor: pointer; transition: 0.3s; border: 1px solid var(--accent);
+  }
+  .btn-outline { background: transparent; color: var(--accent); }
+  .btn-outline:hover { background: rgba(255, 102, 178, 0.1); }
+  .btn-solid { background: var(--accent); color: #000; box-shadow: 0 0 10px rgba(255, 102, 178, 0.4); border: none; }
+  .btn-solid:hover { background: var(--accent-hover); box-shadow: 0 0 20px rgba(255, 102, 178, 0.7); }
+  
+  /* USER BADGE NAVBAR */
+  .user-badge {
+    display: flex; align-items: center; gap: 10px; background: var(--card);
+    padding: 6px 12px 6px 6px; border-radius: 999px; border: 1px solid var(--border);
+    cursor: pointer; transition: 0.3s;
+  }
+  .user-badge:hover { border-color: var(--accent); }
+  .user-avatar {
+    width: 32px; height: 32px; background: var(--accent); color: #000;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1rem; overflow: hidden;
+  }
+  .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ================= HALAMAN / PAGE VIEWS ================= */
+  .page-view { display: none; min-height: 80vh; padding-bottom: 60px; }
+  .page-view.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* DASBOR PROFIL (Hanya tampil di Home) */
+  .dashboard-panel { display: none; max-width: 900px; margin: 40px auto 0; padding: 0 20px; }
+  .dashboard-card {
+    background: linear-gradient(145deg, var(--card), var(--card-hover));
+    border: 1px solid var(--border); border-radius: 20px; padding: 25px 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden;
+  }
+  .dashboard-card::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 15px; }
+  .dash-item { display: flex; flex-direction: column; gap: 5px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+  .dash-label { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .dash-label svg { width: 16px; height: 16px; fill: var(--accent); }
+  .dash-value { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-top: 4px; }
+  .dash-value.usdt { color: var(--usdt-color); }
+  .dash-value.transaksi { color: #fbbf24; }
+
+  /* HERO & PRODUK */
+  .hero { max-width: 900px; margin: 0 auto; text-align: center; padding: 60px 20px 50px; }
+  .hero h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.2; margin-bottom: 16px; font-weight: 800; }
+  .hero h1 span { color: var(--accent); text-shadow: 0 0 15px rgba(255, 102, 178, 0.4); }
+  .hero p { color: var(--muted); font-size: 1.05rem; max-width: 640px; margin: 0 auto; }
+  
+  .section-title { text-align: center; margin: 40px 0 8px; font-size: 1.8rem; font-weight: 800; }
+  .section-sub { text-align: center; color: var(--muted); margin-bottom: 40px; }
+  .products { max-width: 1100px; margin: 0 auto; display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); padding: 0 20px 60px; }
+  
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 30px 24px; display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; overflow: hidden; }
+  .card:hover { transform: translateY(-6px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(255, 102, 178, 0.15); background: var(--card-hover); }
+  
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .card h3 { font-size: 1.3rem; }
+  .sold-badge { background: rgba(251, 191, 36, 0.15); color: #fbbf24; font-size: 0.75rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(251, 191, 36, 0.3); display: flex; align-items: center; gap: 4px; }
+  
+  .price-container { margin: 10px 0 20px; display: flex; flex-direction: column; gap: 2px; }
+  .price-idr { font-size: 1.6rem; font-weight: 800; color: var(--accent); line-height: 1.1; }
+  .price-usdt { font-size: 1rem; font-weight: 600; color: var(--usdt-color); }
+  
+  .stock-info { font-size: 0.85rem; color: var(--muted); margin-bottom: 15px; display: flex; align-items: center; gap: 6px; }
+  .stock-info span { color: var(--text); font-weight: 700; }
+
+  .card ul { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 26px; }
+  .card ul li { position: relative; padding-left: 28px; font-size: 0.92rem; color: var(--muted); }
+  .card ul li::before {
+    content: ""; position: absolute; left: 0; top: 4px; width: 16px; height: 16px;
+    background-color: var(--accent);
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat center;
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat center;
+  }
+  .card .btn-buy { margin-top: auto; display: block; text-align: center; background: var(--accent); color: #000; font-weight: 800; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-size: 1rem; transition: 0.3s; }
+  .card .btn-buy:hover { background: var(--accent-hover); box-shadow: 0 0 20px rgba(255, 102, 178, 0.4); }
+
+  /* LIVE FEED TRANSAKSI */
+  .live-feed { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; }
+  .feed-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; overflow: hidden; }
+  .feed-marquee { display: flex; gap: 15px; animation: scroll 30s linear infinite; width: max-content; }
+  .feed-marquee:hover { animation-play-state: paused; }
+  .feed-item { background: var(--input-bg); border: 1px solid var(--border); padding: 12px 20px; border-radius: 12px; display: flex; flex-direction: column; min-width: 260px; }
+  .feed-item-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem; color: var(--muted); }
+  .feed-name { font-weight: 700; color: var(--accent); }
+  .feed-detail { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
+  .feed-price { font-size: 0.85rem; color: var(--usdt-color); font-weight: 800; }
+  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* ================= HALAMAN TOPUP, RIWAYAT, PENGATURAN ================= */
+  .page-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
+  .page-header { text-align: center; margin-bottom: 30px; }
+  .page-header h2 { font-size: 2rem; color: var(--text); margin-bottom: 8px; }
+  .page-header p { color: var(--muted); }
+
+  .box-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  
+  /* Tab Topup */
+  .topup-tabs { display: flex; gap: 10px; margin-bottom: 25px; background: var(--input-bg); padding: 5px; border-radius: 10px; }
+  .topup-tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--muted); transition: 0.3s; }
+  .topup-tab.active { background: var(--card); color: var(--accent); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+  
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--muted); }
+  .form-control { width: 100%; padding: 14px 15px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text); font-size: 1rem; outline: none; transition: 0.3s; }
+  .form-control:focus { border-color: var(--accent); }
+  .modal-btn { width: 100%; padding: 16px; border-radius: 10px; border: none; background: var(--accent); color: #000; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+  .modal-btn:hover { background: var(--accent-hover); }
+  .error-msg { color: #ff4444; font-size: 0.85rem; text-align: center; margin-bottom: 10px; display: none; padding: 10px; background: rgba(255,68,68,0.1); border-radius: 8px; }
+
+  /* Invoice */
+  .invoice-box { background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-top: 15px; }
+  .invoice-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
+  .invoice-row span:first-child { color: var(--muted); }
+  .invoice-row span:last-child { font-weight: 700; color: var(--text); }
+  .invoice-row.status span:last-child { color: #fbbf24; }
+  .qris-image { width: 100%; max-width: 250px; border-radius: 10px; margin: 10px auto; display: block; border: 1px solid var(--border); }
+  .wallet-address {
+    background: #000; border: 1px dashed var(--accent); padding: 12px; border-radius: 8px;
+    font-family: monospace; font-size: 0.85rem; word-break: break-all; text-align: center; margin: 10px 0;
+    color: var(--accent); cursor: pointer; transition: 0.3s;
+  }
+  .wallet-address:hover { background: rgba(255,102,178,0.1); }
+
+  .crypto-methods { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .crypto-item { background: var(--input-bg); border: 1px solid var(--border); padding: 15px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+  .crypto-item:hover { border-color: var(--accent); }
+  .crypto-item.active { border-color: var(--accent); background: rgba(255, 102, 178, 0.1); }
+  .crypto-title { font-weight: 700; color: var(--text); font-size: 1rem; display: block; margin-bottom: 2px; }
+  .crypto-net { font-size: 0.85rem; color: var(--muted); }
+
+  /* Riwayat */
+  .history-list { display: flex; flex-direction: column; gap: 15px; }
+  .history-item { background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; }
+  .history-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
+  .history-item-title { font-weight: 700; color: var(--text); font-size: 1rem; }
+  .history-item-date { font-size: 0.8rem; color: var(--muted); }
+  .history-item-detail { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--muted); }
+
+  /* Pengaturan */
+  .profile-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; display: block; border: 3px solid var(--accent); background: var(--input-bg); }
+  .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-bottom: 10px; }
+  .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; }
+
+  /* CHECKOUT MODAL */
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100; }
+  .modal-overlay.active { display: flex; }
+  .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 20px; width: 100%; max-width: 420px; padding: 30px; position: relative; box-shadow: 0 10px 40px rgba(255, 102, 178, 0.2); animation: slideDown 0.3s ease; max-height: 90vh; overflow-y: auto; }
+  @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
+  .close-btn:hover { color: var(--accent); }
+  .modal-content h2 { text-align: center; margin-bottom: 20px; color: var(--text); }
+  
+  .checkout-summary { background: var(--input-bg); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid var(--border); }
+  .checkout-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; color: var(--muted); }
+  .checkout-row.total { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 10px; margin-bottom: 0; }
+  .checkout-row.total.usdt { color: var(--usdt-color); }
+  .qty-control { display: flex; align-items: center; gap: 10px; justify-content: space-between; margin-bottom: 15px; }
+  .qty-input { width: 60px; text-align: center; padding: 8px; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text); font-weight: bold; font-size: 1rem; }
+  .payment-methods { display: flex; gap: 10px; margin-bottom: 15px; }
+  .pay-method { flex: 1; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border); cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
+  .pay-method.active { border-color: var(--accent); background: rgba(255, 102, 178, 0.1); color: var(--accent); }
+  .pay-method.active.usdt-active { border-color: var(--usdt-color); background: rgba(38, 161, 123, 0.1); color: var(--usdt-color); }
+
+  @media (max-width: 768px) {
+    .nav { flex-direction: column; gap: 10px; }
+    .nav-right { justify-content: center; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR BROWSER -->
+<div id="browserProgressBar"></div>
+
+<header>
+  <nav class="nav">
+    <div class="logo-container" onclick="navigateTo('home')">
+      <img src="https://raw.githubusercontent.com/veronica-fish/GeoWS/main/img/logo.png" alt="GeoWS Logo" class="logo-img" onerror="this.style.display='none'">
+      <div class="logo-text">Geo<span>WS</span></div>
+    </div>
+    
+    <div class="nav-right">
+      <div class="lang-selector">
+        <button class="lang-btn active" onclick="changeLang('id', event)" title="Indonesia">🇮🇩</button>
+        <button class="lang-btn" onclick="changeLang('en', event)" title="English">🇬🇧</button>
+        <button class="lang-btn" onclick="changeLang('zh', event)" title="中文">🇨🇳</button>
+      </div>
+      
+      <div class="auth-btns" id="navAuthArea">
+        <button class="btn-outline" onclick="openModal('loginModal')" data-i18n="nav_login">Login</button>
+        <button class="btn-solid" onclick="openModal('registerModal')" data-i18n="nav_register">Daftar</button>
+      </div>
+
+      <div id="userArea" style="display: none;" class="auth-btns">
+        <button class="btn-outline" onclick="navigateTo('riwayat')" data-i18n="btn_history">Riwayat</button>
+        <button class="btn-outline" onclick="navigateTo('pengaturan')" data-i18n="btn_settings">Akun</button>
+        <button class="btn-solid" onclick="navigateTo('topup')" data-i18n="btn_topup">Top Up</button>
+        
+        <div class="user-badge" onclick="navigateTo('pengaturan')">
+          <div class="user-avatar" id="userInitial">U</div>
+          <span style="font-size: 0.9rem; font-weight: 700; margin-right: 5px;" id="userNameDisplayNav">User</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ================= HALAMAN 1: HOME ================= -->
+<div id="page-home" class="page-view active">
+  
+  <!-- DASBOR PROFIL -->
+  <section class="dashboard-panel" id="dashboardPanel">
+    <div class="dashboard-card">
+      <h2 style="font-size: 1.2rem; color: var(--text); margin-bottom: 5px;">
+        <span data-i18n="welcome_back">Selamat datang kembali,</span> <span id="userNameDisplay" style="color: var(--accent);">User</span>!
+      </h2>
+      
+      <div class="dash-grid">
+        <div class="dash-item">
+          <div class="dash-label">
+            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            Saldo IDR
+          </div>
+          <div class="dash-value">Rp <span id="dashSaldoIDR">0</span></div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-label">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            Saldo USDT
+          </div>
+          <div class="dash-value usdt"><span id="dashSaldoUSDT">0.00</span> USDT</div>
+        </div>
+        <div class="dash-item">
+          <div class="dash-label">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Total Transaksi
+          </div>
+          <div class="dash-value transaksi"><span id="dashTotalTransaksi">0</span> Kali</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero">
+    <h1 data-i18n="hero_title">Akun WhatsApp <span>Meta One</span> & Email Resmi</h1>
+    <p data-i18n="hero_desc">Nomor terverifikasi, kredensial instan, dan akses penuh setelah pembayaran. Proses cepat, aman, dan terpercaya.</p>
+  </section>
+
+  <h2 class="section-title" id="produk" data-i18n="prod_title">Pilih Produk</h2>
+  <p class="section-sub" data-i18n="prod_desc">Semua produk dikirim otomatis setelah pembayaran dikonfirmasi.</p>
+
+  <section class="products">
+    <!-- PRODUK 1 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 data-i18n="p1_title">Akun WhatsApp Meta One</h3>
+        <span class="sold-badge">⭐ Terjual 1K+</span>
+      </div>
+      <div class="price-container">
+        <div class="price-idr">Rp 120.000</div>
+        <div class="price-usdt">7.5 USDT</div>
+      </div>
+      <div class="stock-info">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Stok tersisa: <span id="stock-p1">0</span>
+      </div>
+      <ul>
+        <li data-i18n="p1_d1">Akun WhatsApp Meta One resmi siap pakai dengan nomor terverifikasi.</li>
+        <li data-i18n="p1_d2">Nomor disamarkan di katalog & nomor penuh dibuka otomatis setelah pembayaran.</li>
+        <li data-i18n="p1_d3">Login mudah menggunakan verifikasi OTP Email.</li>
+      </ul>
+      <button class="btn-buy" onclick="bukaCheckout('Akun WhatsApp Meta One', 120000, 7.5)" data-i18n="btn_buy">Beli Sekarang</button>
+    </div>
+
+    <!-- PRODUK 2 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 data-i18n="p2_title">Email Perusahaan</h3>
+        <span class="sold-badge">⭐ Terjual 1K+</span>
+      </div>
+      <div class="price-container">
+        <div class="price-idr">Rp 450.000</div>
+        <div class="price-usdt">26 USDT</div>
+      </div>
+      <div class="stock-info">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Stok tersisa: <span id="stock-p2">0</span>
+      </div>
+      <ul>
+        <li data-i18n="p2_d1">Full mailbox access.</li>
+        <li data-i18n="p2_d2">Masa aktif mailbox: 2 Hari (48 Jam).</li>
+        <li data-i18n="p2_d3">Kredensial instan (Username & Password).</li>
+        <li data-i18n="p2_d4">Bebas kirim/terima email, OTP WhatsApp & ganti password akun.</li>
+      </ul>
+      <button class="btn-buy" onclick="bukaCheckout('Email Perusahaan', 450000, 26)" data-i18n="btn_buy">Beli Sekarang</button>
+    </div>
+
+    <!-- PRODUK 3 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 data-i18n="p3_title">OTP Email</h3>
+        <span class="sold-badge">⭐ Terjual 1K+</span>
+      </div>
+      <div class="price-container">
+        <div class="price-idr">Rp 110.000</div>
+        <div class="price-usdt">7 USDT</div>
+      </div>
+      <div class="stock-info">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Stok tersisa: <span id="stock-p3">0</span>
+      </div>
+      <ul>
+        <li data-i18n="p3_d1">Email alias bisnis resmi untuk menerima kode verifikasi OTP WhatsApp Meta.</li>
+        <li data-i18n="p3_d2">Masa aktif mailbox: 2 Hari (48 Jam).</li>
+      </ul>
+      <button class="btn-buy" onclick="bukaCheckout('OTP Email', 110000, 7)" data-i18n="btn_buy">Beli Sekarang</button>
+    </div>
+  </section>
+
+  <!-- LIVE FEED TRANSAKSI -->
+  <section class="live-feed">
+    <h2 class="section-title" style="font-size: 1.5rem;" data-i18n="live_feed_title">Produk Terjual</h2>
+    <p class="section-sub" style="margin-bottom: 20px;" data-i18n="live_feed_desc">Update transaksi terbaru dari pembeli kami.</p>
+    
+    <div class="feed-container">
+      <div class="feed-marquee" id="feedContainer">
+        <!-- Diisi oleh JS -->
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= HALAMAN 2: TOPUP ================= -->
+<div id="page-topup" class="page-view">
+  <div class="page-container">
+    <div class="page-header">
+      <h2>Top Up Saldo</h2>
+      <p>Tambahkan saldo IDR atau USDT ke akun Anda.</p>
+    </div>
+
+    <div class="box-container">
+      <div class="topup-tabs">
+        <div class="topup-tab" id="tab-btn-idr" onclick="switchTopupTab('idr')">Rupiah (IDR)</div>
+        <div class="topup-tab" id="tab-btn-crypto" onclick="switchTopupTab('crypto')">Crypto (USDT)</div>
+      </div>
+
+      <!-- TAB IDR -->
+      <div class="topup-content active" id="tab-content-idr" style="display: none;">
+        <!-- Form Input IDR -->
+        <div id="topup-idr-form">
+          <div class="form-group">
+            <label>Nominal TopUp (Minimal Rp50.000)</label>
+            <input type="number" id="inputTopupIDR" class="form-control" placeholder="Contoh: 50000" min="50000">
+            <div class="error-msg" id="errTopupIDR"></div>
+          </div>
+          <button class="modal-btn" onclick="lanjutTopupIDR()">Lanjutkan</button>
+        </div>
+
+        <!-- Invoice IDR -->
+        <div id="topup-idr-invoice" style="display: none;">
+          <div style="text-align: center; padding: 10px; background: var(--input-bg); border-radius: 10px; margin-bottom: 15px;">
+            <img src="https://raw.githubusercontent.com/veronica-fish/GeoWS/main/img/qris-idr.jpg" alt="QRIS" class="qris-image" onerror="this.src='https://via.placeholder.com/250?text=QRIS+Image'">
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 5px;">Scan QRIS ini</p>
+          </div>
+          
+          <div class="invoice-box">
+            <div class="invoice-row">
+              <span>Nominal Transfer</span>
+              <span id="inv-idr-transfer">Rp 0</span>
+            </div>
+            <div class="invoice-row">
+              <span>Saldo Diterima</span>
+              <span id="inv-idr-diterima">Rp 0</span>
+            </div>
+            <div class="invoice-row status">
+              <span>Status</span>
+              <span>PENDING</span>
+            </div>
+          </div>
+          <p style="text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: 15px;">Selesaikan pembayaran sesuai nominal. Saldo akan masuk otomatis setelah sistem memverifikasi.</p>
+        </div>
+      </div>
+
+      <!-- TAB CRYPTO -->
+      <div class="topup-content" id="tab-content-crypto" style="display: none;">
+        <!-- Form Input USDT -->
+        <div id="topup-crypto-form">
+          <div class="form-group">
+            <label>Nominal TopUp (Minimal 1.0 USDT)</label>
+            <input type="number" id="inputTopupUSDT" class="form-control" placeholder="Contoh: 1.0" min="1" step="0.1">
+            <div class="error-msg" id="errTopupUSDT"></div>
+          </div>
+          <button class="modal-btn" onclick="lanjutTopupCrypto1()">Lanjutkan</button>
+        </div>
+
+        <!-- Pilihan Jaringan Crypto -->
+        <div id="topup-crypto-network" style="display: none;">
+          <div class="form-group">
+            <label>Pilih Jaringan</label>
+            <div class="crypto-methods">
+              <div class="crypto-item" id="net-TRC20" onclick="pilihJaringan('TRC20')">
+                <span class="crypto-title">1. USDT (Tron)</span>
+                <span class="crypto-net">TRC20 Network</span>
+              </div>
+              <div class="crypto-item" id="net-BEP20" onclick="pilihJaringan('BEP20')">
+                <span class="crypto-title">2. USDT (BNB)</span>
+                <span class="crypto-net">BEP20 Network</span>
+              </div>
+              <div class="crypto-item" id="net-ERC20" onclick="pilihJaringan('ERC20')">
+                <span class="crypto-title">3. USDT (Ethereum)</span>
+                <span class="crypto-net">ERC20 Network</span>
+              </div>
+            </div>
+            <div class="error-msg" id="errTopupCryptoNet"></div>
+          </div>
+          <button class="modal-btn" onclick="lanjutTopupCrypto2()">Lanjutkan</button>
+        </div>
+
+        <!-- Invoice Crypto -->
+        <div id="topup-crypto-invoice" style="display: none;">
+          <div class="invoice-box">
+            <div class="invoice-row" style="flex-direction: column; gap: 5px;">
+              <span>Address <span id="inv-net-name"></span>:</span>
+              <div class="wallet-address" id="inv-crypto-address" onclick="copyAddress(this)">0x...</div>
+            </div>
+            <div class="invoice-row" style="margin-top: 15px;">
+              <span>Jumlah Kirim</span>
+              <span id="inv-usdt-kirim">0.00 USDT</span>
+            </div>
+            <div class="invoice-row">
+              <span>Saldo Diterima</span>
+              <span id="inv-usdt-diterima">0.00 USDT</span>
+            </div>
+            <div class="invoice-row status">
+              <span>Status</span>
+              <span>PENDING</span>
+            </div>
+          </div>
+          <p style="text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: 15px;">Kirim jumlah yang tepat ke alamat di atas. Saldo akan masuk setelah konfirmasi jaringan.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= HALAMAN 3: RIWAYAT ================= -->
+<div id="page-riwayat" class="page-view">
+  <div class="page-container">
+    <div class="page-header">
+      <h2 data-i18n="history_title">Riwayat Transaksi</h2>
+      <p>Daftar semua pembelian yang pernah Anda lakukan.</p>
+    </div>
+    <div class="box-container">
+      <div class="history-list" id="historyList">
+        <!-- Diisi oleh JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= HALAMAN 4: PENGATURAN ================= -->
+<div id="page-pengaturan" class="page-view">
+  <div class="page-container">
+    <div class="page-header">
+      <h2 data-i18n="settings_title">Pengaturan Akun</h2>
+      <p>Kelola foto profil dan keamanan akun Anda.</p>
+    </div>
+    <div class="box-container">
+      <div class="error-msg" id="settingsError" style="background: rgba(38, 161, 123, 0.2); color: #26a17b;"></div>
+
+      <!-- Ubah Foto Profil -->
+      <div class="form-group" style="text-align: center; margin-bottom: 30px;">
+        <img id="settingsAvatarPreview" src="" class="profile-preview" onerror="this.src='https://via.placeholder.com/100/121216/ff66b2?text=User'">
+        <label style="margin-top: 10px;">Ubah Foto Profil (Pilih dari Galeri)</label>
+        <div class="file-upload-wrapper">
+          <button class="modal-btn" style="margin-top: 5px; background: var(--input-bg); color: var(--text); border: 1px solid var(--border);">Pilih Gambar...</button>
+          <input type="file" id="inputAvatarFile" accept="image/*" onchange="previewFile()">
+        </div>
+        <button class="modal-btn" style="margin-top: 10px;" onclick="simpanFotoProfil()">Simpan Foto</button>
+      </div>
+
+      <!-- Reset Password -->
+      <div class="form-group" style="border-top: 1px dashed var(--border); padding-top: 20px;">
+        <label>Reset Password</label>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 10px;">Kami akan mengirimkan tautan reset password ke email Anda.</p>
+        <button class="modal-btn" style="background: #ff4444; color: #fff;" onclick="kirimResetPassword()">Kirim Link Reset ke Email</button>
+      </div>
+      
+      <button class="modal-btn" style="background: transparent; border: 1px solid var(--muted); color: var(--muted); margin-top: 20px;" onclick="handleLogout()" data-i18n="btn_logout">Keluar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL CHECKOUT (Beli Produk) ================= -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('checkoutModal')">&times;</button>
+    <h2 data-i18n="checkout_title">Pembelian Produk</h2>
+    <div class="error-msg" id="checkoutError"></div>
+    
+    <div style="margin-bottom: 20px;">
+      <p style="font-size: 0.9rem; color: var(--muted);">Produk:</p>
+      <h3 id="coProductName" style="color: var(--text);">Akun WhatsApp Meta One</h3>
+    </div>
+
+    <div class="form-group">
+      <label>Jumlah (Maks. 10)</label>
+      <div class="qty-control">
+        <button type="button" class="btn-outline" onclick="ubahQty(-1)">-</button>
+        <input type="number" id="coQty" class="qty-input" value="1" min="1" max="10" onchange="updateCheckoutTotal()">
+        <button type="button" class="btn-outline" onclick="ubahQty(1)">+</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Metode Pembayaran</label>
+      <div class="payment-methods">
+        <div class="pay-method active" id="pay-idr" onclick="setPayMethod('IDR')">Saldo IDR</div>
+        <div class="pay-method" id="pay-usdt" onclick="setPayMethod('USDT')">Saldo USDT</div>
+      </div>
+    </div>
+
+    <div class="checkout-summary">
+      <div class="checkout-row">
+        <span>Harga Satuan</span>
+        <span id="coUnitPrice">Rp 120.000</span>
+      </div>
+      <div class="checkout-row total" id="coTotalPrice">Rp 120.000</div>
+    </div>
+
+    <button class="modal-btn" id="btnConfirmBuy" onclick="prosesPembelian()" data-i18n="btn_confirm_pay">Konfirmasi Pembayaran</button>
+  </div>
+</div>
+
+<!-- MODAL LOGIN & DAFTAR -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('loginModal')">&times;</button>
+    <h2 data-i18n="modal_login_title">Login</h2>
+    <div class="error-msg" id="loginError"></div>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label data-i18n="label_email">Email</label>
+        <input type="email" id="loginEmail" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_password">Password</label>
+        <input type="password" id="loginPassword" class="form-control" required>
+      </div>
+      <button type="submit" class="modal-btn" data-i18n="btn_login">Masuk</button>
+    </form>
+    <div class="switch-form">
+      <span data-i18n="no_account">Belum punya akun?</span> <a onclick="switchModal('loginModal', 'registerModal')" data-i18n="nav_register">Daftar</a>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="registerModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('registerModal')">&times;</button>
+    <h2 data-i18n="modal_register_title">Daftar Akun</h2>
+    <div class="error-msg" id="registerError"></div>
+    <form onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label data-i18n="label_username">Username</label>
+        <input type="text" id="regUsername" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_email">Email</label>
+        <input type="email" id="regEmail" class="form-control" required placeholder="email@contoh.com">
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_password">Password</label>
+        <input type="password" id="regPassword" class="form-control" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_confirm_password">Konfirmasi Password</label>
+        <input type="password" id="regConfirmPassword" class="form-control" required minlength="6">
+      </div>
+      <button type="submit" class="modal-btn" data-i18n="btn_register">Daftar</button>
+    </form>
+    <div class="switch-form">
+      <span data-i18n="have_account">Sudah punya akun?</span> <a onclick="switchModal('registerModal', 'loginModal')" data-i18n="nav_login">Login</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const translations = {
+    id: {
+      nav_login: "Login", nav_register: "Daftar", btn_topup: "Top Up", btn_logout: "Keluar", welcome_back: "Selamat datang kembali,",
+      btn_history: "Riwayat", btn_settings: "Akun",
+      hero_title: "Akun WhatsApp <span>Meta One</span> & Email Resmi",
+      hero_desc: "Nomor terverifikasi, kredensial instan, dan akses penuh setelah pembayaran. Proses cepat, aman, dan terpercaya.",
+      prod_title: "Pilih Produk", prod_desc: "Semua produk dikirim otomatis setelah pembayaran dikonfirmasi.",
+      btn_buy: "Beli Sekarang", checkout_title: "Pembelian Produk", btn_confirm_pay: "Konfirmasi Pembayaran",
+      history_title: "Riwayat Transaksi", settings_title: "Pengaturan Akun",
+      p1_title: "Akun WhatsApp Meta One", p1_d1: "Akun WhatsApp Meta One resmi siap pakai dengan nomor terverifikasi.", p1_d2: "Nomor disamarkan di katalog & nomor penuh dibuka otomatis setelah pembayaran.", p1_d3: "Login mudah menggunakan verifikasi OTP Email.",
+      p2_title: "Email Perusahaan", p2_d1: "Full mailbox access.", p2_d2: "Masa aktif mailbox: 2 Hari (48 Jam).", p2_d3: "Kredensial instan (Username & Password).", p2_d4: "Bebas kirim/terima email, OTP WhatsApp & ganti password akun.",
+      p3_title: "OTP Email", p3_d1: "Email alias bisnis resmi untuk menerima kode verifikasi OTP WhatsApp Meta.", p3_d2: "Masa aktif mailbox: 2 Hari (48 Jam).",
+      modal_login_title: "Login", label_email: "Email", label_password: "Password", label_confirm_password: "Konfirmasi Password", label_username: "Username",
+      btn_login: "Masuk", no_account: "Belum punya akun?", have_account: "Sudah punya akun?",
+      modal_register_title: "Daftar Akun", btn_register: "Daftar",
+      live_feed_title: "Produk Terjual", live_feed_desc: "Update transaksi terbaru dari pembeli kami."
+    },
+    en: {
+      nav_login: "Login", nav_register: "Register", btn_topup: "Top Up", btn_logout: "Logout", welcome_back: "Welcome back,",
+      btn_history: "History", btn_settings: "Account",
+      hero_title: "Official <span>Meta One</span> WhatsApp Accounts & Emails",
+      hero_desc: "Verified numbers, instant credentials, and full access after payment. Fast, secure, and reliable.",
+      prod_title: "Choose Product", prod_desc: "All products are delivered automatically after payment confirmation.",
+      btn_buy: "Buy Now", checkout_title: "Product Checkout", btn_confirm_pay: "Confirm Payment",
+      history_title: "Transaction History", settings_title: "Account Settings",
+      p1_title: "Meta One WhatsApp Account", p1_d1: "Official Meta One WhatsApp account ready to use with a verified number.", p1_d2: "Number is masked in catalog & full number opens automatically after payment.", p1_d3: "Easy login using Email OTP verification.",
+      p2_title: "Company Email", p2_d1: "Full mailbox access.", p2_d2: "Mailbox active period: 2 Days (48 Hours).", p2_d3: "Instant credentials (Username & Password).", p2_d4: "Free send/receive emails, WhatsApp OTP & change account password.",
+      p3_title: "Email OTP", p3_d1: "Official business alias email to receive Meta WhatsApp OTP verification codes.", p3_d2: "Mailbox active period: 2 Days (48 Hours).",
+      modal_login_title: "Login", label_email: "Email", label_password: "Password", label_confirm_password: "Confirm Password", label_username: "Username",
+      btn_login: "Sign In", no_account: "Don't have an account?", have_account: "Already have an account?",
+      modal_register_title: "Create Account", btn_register: "Register",
+      live_feed_title: "Sold Products", live_feed_desc: "Latest transaction updates from our buyers."
+    },
+    zh: {
+      nav_login: "登录", nav_register: "注册", btn_topup: "充值", btn_logout: "退出", welcome_back: "欢迎回来，",
+      btn_history: "历史记录", btn_settings: "账号",
+      hero_title: "官方 <span>Meta One</span> WhatsApp 账号与邮箱",
+      hero_desc: "已验证号码，即时凭证，付款后即可完全访问。快速、安全、可靠。",
+      prod_title: "选择产品", prod_desc: "所有产品在确认付款后自动发货。",
+      btn_buy: "立即购买", checkout_title: "产品结算", btn_confirm_pay: "确认支付",
+      history_title: "交易记录", settings_title: "账号设置",
+      p1_title: "Meta One WhatsApp 账号", p1_d1: "官方 Meta One WhatsApp 账号，即买即用，号码已验证。", p1_d2: "目录中号码被隐藏，付款后自动显示完整号码。", p1_d3: "通过邮箱 OTP 验证轻松登录。",
+      p2_title: "企业邮箱", p2_d1: "完整邮箱访问权限。", p2_d2: "邮箱有效期：2天（48小时）。", p2_d3: "即时凭证（用户名和密码）。", p2_d4: "自由收发邮件、接收 WhatsApp OTP 及修改账号密码。",
+      p3_title: "OTP 邮箱", p3_d1: "官方企业别名邮箱，用于接收 Meta WhatsApp OTP 验证码。", p3_d2: "邮箱有效期：2天（48小时）。",
+      modal_login_title: "登录", label_email: "邮箱", label_password: "密码", label_confirm_password: "确认密码", label_username: "用户名",
+      btn_login: "登录", no_account: "还没有账号？", have_account: "已有账号？",
+      modal_register_title: "注册账号", btn_register: "注册",
+      live_feed_title: "已售产品", live_feed_desc: "来自买家的最新交易更新。"
+    }
+  };
+
+  let currentLang = 'id';
+  window.changeLang = (lang, event) => {
+    currentLang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang][key]) {
+        if (key === 'hero_title') {
+          el.innerHTML = translations[lang][key];
+        } else {
+          el.innerText = translations[lang][key];
+        }
+      }
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  };
+
+  window.openModal = (id) => document.getElementById(id).classList.add('active');
+  window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+  window.switchModal = (closeId, openId) => {
+    window.closeModal(closeId);
+    window.openModal(openId);
+  };
+
+  // ================= LOGIKA NAVIGASI & LOADING BROWSER =================
+  const progressBar = document.getElementById('browserProgressBar');
+
+  function showBrowserLoading(callback) {
+    // Mulai animasi loading bar
+    progressBar.style.opacity = '1';
+    progressBar.style.width = '0%';
+    
+    setTimeout(() => { progressBar.style.width = '40%'; }, 50);
+    setTimeout(() => { progressBar.style.width = '70%'; }, 400);
+    setTimeout(() => { progressBar.style.width = '90%'; }, 1000);
+
+    // Waktu tunggu 1.5 detik (1500ms)
+    setTimeout(() => {
+      progressBar.style.width = '100%';
+      
+      // Jalankan callback (ganti halaman)
+      if (callback) callback();
+
+      // Hilangkan loading bar setelah selesai
+      setTimeout(() => {
+        progressBar.style.opacity = '0';
+        setTimeout(() => { progressBar.style.width = '0%'; }, 300);
+      }, 300);
+
+    }, 1500); 
+  }
+
+  window.navigateTo = (page, subParam = null) => {
+    let newPath = `/${page}`;
+    if (page === 'topup' && subParam) newPath += `/${subParam}`;
+    
+    if(window.location.protocol !== 'file:') {
+       window.history.pushState({page: page, subParam: subParam}, '', newPath);
+    }
+
+    showBrowserLoading(() => {
+      document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+      
+      const targetPage = document.getElementById(`page-${page}`);
+      if (targetPage) {
+        targetPage.classList.add('active');
+        window.scrollTo(0, 0);
+      }
+
+      if (page === 'home') {
+        const auth = window.firebaseAuth;
+        if(auth && auth.currentUser) {
+           document.getElementById('dashboardPanel').style.display = 'block';
+        }
+      } else if (page === 'topup') {
+        if(subParam === 'usdt') {
+           switchTopupTab('crypto');
+        } else if (subParam === 'idr') {
+           switchTopupTab('idr');
+        } else {
+           switchTopupTab('idr');
+        }
+      } else if (page === 'riwayat') {
+        loadHistoryData();
+      } else if (page === 'pengaturan') {
+        loadSettingsData();
+      }
+    });
+  };
+
+  window.addEventListener('popstate', (e) => {
+    const path = window.location.pathname;
+    if (path.includes('topup')) {
+      if(path.includes('usdt')) navigateTo('topup', 'usdt');
+      else navigateTo('topup', 'idr');
+    } else if (path.includes('riwayat')) {
+      navigateTo('riwayat');
+    } else if (path.includes('pengaturan')) {
+      navigateTo('pengaturan');
+    } else {
+      navigateTo('home');
+    }
+  });
+
+  // ================= FUNGSI HALAMAN TOPUP =================
+  window.switchTopupTab = (type) => {
+    document.getElementById('tab-btn-idr').classList.remove('active');
+    document.getElementById('tab-btn-crypto').classList.remove('active');
+    
+    document.getElementById('tab-content-idr').style.display = 'none';
+    document.getElementById('tab-content-crypto').style.display = 'none';
+
+    if (type === 'idr') {
+      document.getElementById('tab-btn-idr').classList.add('active');
+      document.getElementById('tab-content-idr').style.display = 'block';
+    } else {
+      document.getElementById('tab-btn-crypto').classList.add('active');
+      document.getElementById('tab-content-crypto').style.display = 'block';
+    }
+    resetTopupForm();
+  };
+
+  function resetTopupForm() {
+    document.getElementById('topup-idr-form').style.display = 'block';
+    document.getElementById('topup-idr-invoice').style.display = 'none';
+    document.getElementById('inputTopupIDR').value = '';
+    document.getElementById('errTopupIDR').style.display = 'none';
+
+    document.getElementById('topup-crypto-form').style.display = 'block';
+    document.getElementById('topup-crypto-network').style.display = 'none';
+    document.getElementById('topup-crypto-invoice').style.display = 'none';
+    document.getElementById('inputTopupUSDT').value = '';
+    document.getElementById('errTopupUSDT').style.display = 'none';
+    document.getElementById('errTopupCryptoNet').style.display = 'none';
+    document.querySelectorAll('.crypto-item').forEach(el => el.classList.remove('active'));
+    selectedNetwork = '';
+  }
+
+  window.lanjutTopupIDR = () => {
+    const nominal = parseInt(document.getElementById('inputTopupIDR').value);
+    const err = document.getElementById('errTopupIDR');
+
+    if (!nominal || nominal < 50000) {
+      err.style.display = 'block';
+      err.innerText = "Minimal Top Up adalah Rp 50.000";
+      return;
+    }
+    err.style.display = 'none';
+
+    document.getElementById('topup-idr-form').style.display = 'none';
+    document.getElementById('topup-idr-invoice').style.display = 'block';
+
+    document.getElementById('inv-idr-transfer').innerText = `Rp ${nominal.toLocaleString('id-ID')}`;
+    document.getElementById('inv-idr-diterima').innerText = `Rp ${nominal.toLocaleString('id-ID')}`;
+  };
+
+  let selectedNetwork = '';
+  let nominalUSDT = 0;
+
+  window.pilihJaringan = (net) => {
+    selectedNetwork = net;
+    document.querySelectorAll('.crypto-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  };
+
+  window.lanjutTopupCrypto1 = () => {
+    const nominal = parseFloat(document.getElementById('inputTopupUSDT').value);
+    const err = document.getElementById('errTopupUSDT');
+
+    if (!nominal || nominal < 1.0) {
+      err.style.display = 'block';
+      err.innerText = "Minimal Top Up adalah 1.0 USDT";
+      return;
+    }
+    err.style.display = 'none';
+    nominalUSDT = nominal;
+
+    document.getElementById('topup-crypto-form').style.display = 'none';
+    document.getElementById('topup-crypto-network').style.display = 'block';
+  };
+
+  window.lanjutTopupCrypto2 = () => {
+    const err = document.getElementById('errTopupCryptoNet');
+    if (!selectedNetwork) {
+      err.style.display = 'block';
+      err.innerText = "Silakan pilih jaringan terlebih dahulu.";
+      return;
+    }
+    err.style.display = 'none';
+
+    document.getElementById('topup-crypto-network').style.display = 'none';
+    document.getElementById('topup-crypto-invoice').style.display = 'block';
+
+    let address = '';
+    if (selectedNetwork === 'TRC20') address = 'TFhbQp4BDwvdVp3GPZbVAXTg8oB1AyZM7x';
+    else if (selectedNetwork === 'BEP20') address = '0x7c92c4b0dcb9b67cd314c8136f9b2ef2eec29810';
+    else if (selectedNetwork === 'ERC20') address = '0x7c92c4b0dcb9b67cd314c8136f9b2ef2eec29810';
+
+    document.getElementById('inv-net-name').innerText = selectedNetwork;
+    document.getElementById('inv-crypto-address').innerText = address;
+    document.getElementById('inv-usdt-kirim').innerText = `${nominalUSDT.toFixed(2)} USDT`;
+    document.getElementById('inv-usdt-diterima').innerText = `${nominalUSDT.toFixed(2)} USDT`;
+  };
+
+  window.copyAddress = (el) => {
+    const text = el.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const originalBg = el.style.background;
+      el.style.background = 'rgba(38, 161, 123, 0.2)';
+      el.innerText = "Tersalin!";
+      setTimeout(() => {
+        el.style.background = originalBg;
+        el.innerText = text;
+      }, 1500);
+    });
+  };
+
+  // ================= FUNGSI STOK RANDOM & LIVE FEED =================
+  function generateStock() {
+    const randomStock = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    document.getElementById('stock-p1').innerText = randomStock(1000, 10000).toLocaleString('id-ID');
+    document.getElementById('stock-p2').innerText = randomStock(1000, 10000).toLocaleString('id-ID');
+    document.getElementById('stock-p3').innerText = randomStock(1000, 10000).toLocaleString('id-ID');
+  }
+  generateStock();
+
+  function generateLiveFeed() {
+    const container = document.getElementById('feedContainer');
+    const products = [
+      { name: 'Akun WhatsApp Meta One', priceIDR: 120000, priceUSDT: 7.5 },
+      { name: 'Email Perusahaan', priceIDR: 450000, priceUSDT: 26 },
+      { name: 'OTP Email', priceIDR: 110000, priceUSDT: 7 }
+    ];
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    let html = '';
+    for (let i = 0; i < 15; i++) {
+      const nameLength = Math.floor(Math.random() * 3) + 1;
+      const starsLength = Math.floor(Math.random() * 6) + 1;
+      let buyerName = '';
+      for (let j = 0; j < nameLength; j++) {
+        buyerName += alphabet[Math.floor(Math.random() * alphabet.length)];
+      }
+      buyerName += '*'.repeat(starsLength);
+
+      const randomProduct = products[Math.floor(Math.random() * products.length)];
+      const qty = Math.floor(Math.random() * 10) + 1;
+      const isIDR = Math.random() > 0.5;
+      let priceStr = isIDR ? `Rp ${(randomProduct.priceIDR * qty).toLocaleString('id-ID')}` : `${(randomProduct.priceUSDT * qty).toFixed(2)} USDT`;
+
+      html += `
+        <div class="feed-item">
+          <div class="feed-item-header"><span class="feed-name">${buyerName}</span><span>Baru saja</span></div>
+          <div class="feed-detail">${randomProduct.name}</div>
+          <div class="feed-price">${qty} Item - ${priceStr}</div>
+        </div>
+      `;
+    }
+    container.innerHTML = html + html;
+  }
+  generateLiveFeed();
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, collection, addDoc, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXI6kfx_2vLT3eJcPEjYGtRKYTPbbfSis",
+    authDomain: "geows-a4155.firebaseapp.com",
+    projectId: "geows-a4155",
+    storageBucket: "geows-a4155.firebasestorage.app",
+    messagingSenderId: "1026183228103",
+    appId: "1:1026183228103:web:1e33f927860de10c8d6ce2",
+    measurementId: "G-0RF3YC03KG"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.firebaseAuth = auth;
+  window.firebaseDb = db;
+
+  let currentUserData = null; 
+  let selectedProduct = { name: "", priceIDR: 0, priceUSDT: 0 };
+  let selectedMethod = "IDR";
+
+  // ================= CHECKOUT & PEMBELIAN =================
+  window.bukaCheckout = (nama, hargaIDR, hargaUSDT) => {
+    if (!auth.currentUser) {
+      alert("Silakan Login terlebih dahulu untuk membeli produk.");
+      window.openModal('loginModal');
+      return;
+    }
+    
+    selectedProduct = { name: nama, priceIDR: hargaIDR, priceUSDT: hargaUSDT };
+    document.getElementById('coProductName').innerText = nama;
+    document.getElementById('coQty').value = 1;
+    document.getElementById('checkoutError').style.display = 'none';
+    
+    setPayMethod('IDR');
+    window.openModal('checkoutModal');
+    updateCheckoutTotal();
+  };
+
+  window.ubahQty = (val) => {
+    let qty = parseInt(document.getElementById('coQty').value) || 1;
+    qty += val;
+    if (qty < 1) qty = 1;
+    if (qty > 10) qty = 10;
+    document.getElementById('coQty').value = qty;
+    updateCheckoutTotal();
+  };
+
+  window.setPayMethod = (method) => {
+    selectedMethod = method;
+    const btnIDR = document.getElementById('pay-idr');
+    const btnUSDT = document.getElementById('pay-usdt');
+    const totalEl = document.getElementById('coTotalPrice');
+    
+    if (method === 'IDR') {
+      btnIDR.classList.add('active');
+      btnIDR.classList.remove('usdt-active');
+      btnUSDT.classList.remove('active', 'usdt-active');
+      totalEl.classList.remove('usdt');
+    } else {
+      btnUSDT.classList.add('active', 'usdt-active');
+      btnIDR.classList.remove('active', 'usdt-active');
+      totalEl.classList.add('usdt');
+    }
+    updateCheckoutTotal();
+  };
+
+  window.updateCheckoutTotal = () => {
+    let qty = parseInt(document.getElementById('coQty').value) || 1;
+    if (qty > 10) { qty = 10; document.getElementById('coQty').value = 10; }
+    else if (qty < 1) { qty = 1; document.getElementById('coQty').value = 1; }
+
+    if (selectedMethod === 'IDR') {
+      const total = selectedProduct.priceIDR * qty;
+      document.getElementById('coUnitPrice').innerText = `Rp ${selectedProduct.priceIDR.toLocaleString('id-ID')}`;
+      document.getElementById('coTotalPrice').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+    } else {
+      const total = selectedProduct.priceUSDT * qty;
+      document.getElementById('coUnitPrice').innerText = `${selectedProduct.priceUSDT} USDT`;
+      document.getElementById('coTotalPrice').innerText = `${total.toFixed(2)} USDT`;
+    }
+  };
+
+  window.prosesPembelian = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const qty = parseInt(document.getElementById('coQty').value) || 1;
+    const errEl = document.getElementById('checkoutError');
+    const btnConfirm = document.getElementById('btnConfirmBuy');
+    
+    const totalIDR = selectedProduct.priceIDR * qty;
+    const totalUSDT = selectedProduct.priceUSDT * qty;
+    const currentSaldoIDR = currentUserData.saldo || 0;
+    const currentSaldoUSDT = currentUserData.saldoUSDT || 0;
+
+    if (selectedMethod === 'IDR') {
+      if (currentSaldoIDR < totalIDR) {
+        errEl.style.display = 'block';
+        errEl.innerHTML = `Saldo IDR tidak cukup! Sisa saldo: Rp ${currentSaldoIDR.toLocaleString('id-ID')}. <br><a href="#" onclick="closeModal('checkoutModal'); navigateTo('topup', 'idr');" style="color:#fff; font-weight:bold; text-decoration:underline;">Top Up Sekarang</a>`;
+        return;
+      }
+    } else {
+      if (currentSaldoUSDT < totalUSDT) {
+        errEl.style.display = 'block';
+        errEl.innerHTML = `Saldo USDT tidak cukup! Sisa saldo: ${currentSaldoUSDT.toFixed(2)} USDT. <br><a href="#" onclick="closeModal('checkoutModal'); navigateTo('topup', 'usdt');" style="color:#fff; font-weight:bold; text-decoration:underline;">Top Up Sekarang</a>`;
+        return;
+      }
+    }
+
+    btnConfirm.innerText = "Memproses...";
+    btnConfirm.disabled = true;
+    errEl.style.display = 'none';
+
+    try {
+      const userRef = doc(db, "users", user.uid);
+      
+      const updateData = { totalTransaksi: increment(qty) };
+      if (selectedMethod === 'IDR') {
+        updateData.saldo = increment(-totalIDR);
+      } else {
+        updateData.saldoUSDT = increment(-totalUSDT);
+      }
+      await updateDoc(userRef, updateData);
+
+      const transRef = collection(db, "users", user.uid, "transactions");
+      await addDoc(transRef, {
+        product: selectedProduct.name,
+        qty: qty,
+        total: selectedMethod === 'IDR' ? totalIDR : totalUSDT,
+        method: selectedMethod,
+        date: serverTimestamp()
+      });
+
+      alert(`Pembayaran Berhasil!\n\nAnda membeli ${qty} ${selectedProduct.name}.\nSilakan hubungi Admin via Telegram untuk mengambil kredensial akun Anda.`);
+      closeModal('checkoutModal');
+      
+      const telegramUser = "Geo_WS"; 
+      const pesanFinal = encodeURIComponent(
+        `Halo Admin GeoWS, saya SUDAH BAYAR via Saldo (${selectedMethod}):\n` +
+        `• Produk: ${qty}x ${selectedProduct.name}\n` +
+        `• Total: ${selectedMethod === 'IDR' ? 'Rp ' + totalIDR.toLocaleString('id-ID') : totalUSDT.toFixed(2) + ' USDT'}\n\n` +
+        `Mohon kirimkan akun/kredensialnya. Terima kasih.`
+      );
+      window.open(`https://t.me/${telegramUser}?text=${pesanFinal}`, "_blank");
+
+      await fetchUserData(user.uid);
+
+    } catch (error) {
+      errEl.style.display = 'block';
+      errEl.innerText = "Terjadi kesalahan sistem: " + error.message;
+    } finally {
+      btnConfirm.innerText = "Konfirmasi Pembayaran";
+      btnConfirm.disabled = false;
+    }
+  };
+
+  // ================= HALAMAN RIWAYAT =================
+  window.loadHistoryData = async () => {
+    const user = auth.currentUser;
+    const listEl = document.getElementById('historyList');
+    if (!user) {
+      listEl.innerHTML = '<p style="text-align:center; color:var(--muted);">Silakan login terlebih dahulu.</p>';
+      return;
+    }
+
+    listEl.innerHTML = '<p style="text-align:center; color:var(--muted); font-size:0.9rem;">Memuat data...</p>';
+
+    try {
+      const transRef = collection(db, "users", user.uid, "transactions");
+      const q = query(transRef, orderBy("date", "desc"));
+      const querySnapshot = await getDocs(q);
+
+      listEl.innerHTML = '';
+      if (querySnapshot.empty) {
+        listEl.innerHTML = '<p style="text-align:center; color:var(--muted); font-size:0.9rem;">Belum ada transaksi.</p>';
+        return;
+      }
+
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const dateStr = data.date ? data.date.toDate().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : 'Baru saja';
+        const isIDR = data.method === 'IDR';
+        const totalStr = isIDR ? `Rp ${data.total.toLocaleString('id-ID')}` : `${data.total.toFixed(2)} USDT`;
+
+        const itemHTML = `
+          <div class="history-item">
+            <div class="history-item-header">
+              <span class="history-item-title">${data.product}</span>
+              <span class="history-item-date">${dateStr}</span>
+            </div>
+            <div class="history-item-detail">
+              <span>${data.qty} Item (${data.method})</span>
+              <span style="color: ${isIDR ? 'var(--accent)' : 'var(--usdt-color)'}; font-weight: bold;">${totalStr}</span>
+            </div>
+          </div>
+        `;
+        listEl.insertAdjacentHTML('beforeend', itemHTML);
+      });
+    } catch (error) {
+      listEl.innerHTML = `<p style="text-align:center; color:#ff4444;">Gagal memuat riwayat: ${error.message}</p>`;
+    }
+  };
+
+  // ================= HALAMAN PENGATURAN =================
+  let newAvatarBase64 = "";
+
+  window.previewFile = () => {
+    const file = document.getElementById('inputAvatarFile').files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('settingsAvatarPreview').src = e.target.result;
+        newAvatarBase64 = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  window.loadSettingsData = () => {
+    if (!currentUserData) return;
+    newAvatarBase64 = ""; 
+    
+    const avatarImg = document.getElementById('settingsAvatarPreview');
+    const errorMsg = document.getElementById('settingsError');
+    errorMsg.style.display = 'none';
+
+    if (currentUserData.photoURL) {
+      avatarImg.src = currentUserData.photoURL;
+    } else {
+      avatarImg.src = 'https://via.placeholder.com/100/121216/ff66b2?text=User';
+    }
+  };
+
+  window.simpanFotoProfil = async () => {
+    const user = auth.currentUser;
+    const errorMsg = document.getElementById('settingsError');
+
+    if (!newAvatarBase64) {
+      errorMsg.style.display = 'block';
+      errorMsg.style.background = 'rgba(255, 68, 68, 0.1)';
+      errorMsg.style.color = '#ff4444';
+      errorMsg.innerText = "Silakan pilih gambar terlebih dahulu!";
+      return;
+    }
+
+    try {
+      await updateDoc(doc(db, "users", user.uid), { photoURL: newAvatarBase64 });
+      errorMsg.style.display = 'block';
+      errorMsg.style.background = 'rgba(38, 161, 123, 0.2)';
+      errorMsg.style.color = '#26a17b';
+      errorMsg.innerText = "Foto profil berhasil diperbarui!";
+      
+      await fetchUserData(user.uid); 
+    } catch (error) {
+      errorMsg.style.display = 'block';
+      errorMsg.style.background = 'rgba(255, 68, 68, 0.1)';
+      errorMsg.style.color = '#ff4444';
+      errorMsg.innerText = "Gagal menyimpan foto: " + error.message;
+    }
+  };
+
+  window.kirimResetPassword = async () => {
+    const user = auth.currentUser;
+    const errorMsg = document.getElementById('settingsError');
+
+    if (!user || !user.email) return;
+
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      errorMsg.style.display = 'block';
+      errorMsg.style.background = 'rgba(38, 161, 123, 0.2)';
+      errorMsg.style.color = '#26a17b';
+      errorMsg.innerText = `Link reset password telah dikirim ke email ${user.email}. Cek kotak masuk/spam Anda.`;
+    } catch (error) {
+      errorMsg.style.display = 'block';
+      errorMsg.style.background = 'rgba(255, 68, 68, 0.1)';
+      errorMsg.style.color = '#ff4444';
+      errorMsg.innerText = "Gagal mengirim email: " + error.message;
+    }
+  };
+
+  // ================= FUNGSI BAWAAN FIREBASE =================
+  async function fetchUserData(uid) {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      currentUserData = docSnap.data();
+      updateUIData(currentUserData);
+    }
+  }
+
+  function updateUIData(data) {
+    const username = data.username;
+    const saldoIDR = data.saldo || 0;
+    const saldoUSDT = data.saldoUSDT || 0.00;
+    const totalTransaksi = data.totalTransaksi || 0;
+    const photoURL = data.photoURL;
+
+    document.getElementById('userNameDisplayNav').innerText = username;
+    
+    const avatarDiv = document.getElementById('userInitial');
+    if (photoURL) {
+      avatarDiv.innerHTML = `<img src="${photoURL}" alt="Profile" onerror="this.style.display='none'">`;
+    } else {
+      avatarDiv.innerHTML = username.charAt(0).toUpperCase();
+    }
+
+    document.getElementById('userNameDisplay').innerText = username;
+    document.getElementById('dashSaldoIDR').innerText = saldoIDR.toLocaleString('id-ID');
+    document.getElementById('dashSaldoUSDT').innerText = saldoUSDT.toFixed(2);
+    document.getElementById('dashTotalTransaksi').innerText = totalTransaksi;
+  }
+
+  window.handleRegister = async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('regUsername').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+    const confirmPass = document.getElementById('regConfirmPassword').value;
+    const errEl = document.getElementById('registerError');
+    
+    if (password !== confirmPass) {
+      errEl.style.display = 'block'; errEl.innerText = "Password tidak cocok!";
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        username: username,
+        email: email,
+        saldo: 0,
+        saldoUSDT: 0.00,
+        totalTransaksi: 0,
+        photoURL: ""
+      });
+
+      alert("Registrasi berhasil! Anda sudah login otomatis.");
+      window.closeModal('registerModal');
+    } catch (error) {
+      errEl.style.display = 'block'; 
+      if (error.code === 'auth/email-already-in-use') {
+        errEl.innerText = "Email sudah terdaftar!";
+      } else if (error.code === 'auth/weak-password') {
+        errEl.innerText = "Password terlalu lemah (minimal 6 karakter).";
+      } else {
+        errEl.innerText = "Gagal mendaftar: " + error.message;
+      }
+    }
+  };
+
+  window.handleLogin = async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const errEl = document.getElementById('loginError');
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("Login berhasil!");
+      window.closeModal('loginModal');
+    } catch (error) {
+      errEl.style.display = 'block'; 
+      errEl.innerText = "Email atau Password salah!";
+    }
+  };
+
+  window.handleLogout = async () => {
+    await signOut(auth);
+    navigateTo('home');
+    alert("Anda telah keluar.");
+  };
+
+  onAuthStateChanged(auth, async (user) => {
+    const navAuthArea = document.getElementById('navAuthArea');
+    const userArea = document.getElementById('userArea');
+    const dashboardPanel = document.getElementById('dashboardPanel');
+
+    if (user) {
+      navAuthArea.style.display = 'none';
+      userArea.style.display = 'flex';
+      dashboardPanel.style.display = 'block';
+      await fetchUserData(user.uid);
+    } else {
+      currentUserData = null;
+      navAuthArea.style.display = 'flex';
+      userArea.style.display = 'none';
+      dashboardPanel.style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>
