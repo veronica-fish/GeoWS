@@ -13,11 +13,19 @@
   }
   
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  #animatedBg {
+    position: fixed; top: -10%; left: -10%; width: 120%; height: 120%;
+    background-image: url('https://raw.githubusercontent.com/veronica-fish/GeoWS/main/img/bg.png');
+    background-size: cover; background-position: center; background-repeat: repeat;
+    opacity: 0.5; filter: blur(4px); z-index: -2; pointer-events: none;
+    transition: transform 0.1s ease-out; will-change: transform;
+  }
+
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background-color: var(--bg); color: var(--text); line-height: 1.6;
-    background-image: radial-gradient(circle at 50% 0%, rgba(255, 102, 178, 0.08) 0%, transparent 50%);
-    overflow-x: hidden;
+    overflow-x: hidden; position: relative;
   }
   a { color: var(--accent); text-decoration: none; }
 
@@ -28,16 +36,8 @@
   }
 
   /* NAVBAR */
-  header {
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(8, 8, 10, 0.85); backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav {
-    max-width: 1100px; margin: 0 auto;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 20px; gap: 15px;
-  }
+  header { position: sticky; top: 0; z-index: 50; background: rgba(8, 8, 10, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .nav { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; gap: 15px; }
   .logo-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
   .logo-img { height: 48px; width: 48px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); box-shadow: 0 0 10px rgba(255, 102, 178, 0.3); }
   .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; }
@@ -45,50 +45,30 @@
   
   .nav-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
   
-  .lang-selector {
-    display: flex; gap: 8px; align-items: center;
-    background: var(--card); border: 1px solid var(--border);
-    padding: 4px 10px; border-radius: 999px;
-  }
+  .lang-selector { display: flex; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; }
   .lang-btn { background: transparent; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.5; transition: 0.3s; padding: 4px; }
   .lang-btn.active { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 5px var(--accent)); }
 
   .auth-btns { display: flex; gap: 10px; align-items: center; }
-  .btn-outline, .btn-solid {
-    padding: 6px 16px; border-radius: 999px; font-weight: 700; font-size: 0.85rem;
-    cursor: pointer; transition: 0.3s; border: 1px solid var(--accent);
-  }
+  .btn-outline, .btn-solid { padding: 6px 16px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.3s; border: 1px solid var(--accent); }
   .btn-outline { background: transparent; color: var(--accent); }
   .btn-outline:hover { background: rgba(255, 102, 178, 0.1); }
   .btn-solid { background: var(--accent); color: #000; box-shadow: 0 0 10px rgba(255, 102, 178, 0.4); border: none; }
   .btn-solid:hover { background: var(--accent-hover); box-shadow: 0 0 20px rgba(255, 102, 178, 0.7); }
   
-  .user-badge {
-    display: flex; align-items: center; gap: 10px; background: var(--card);
-    padding: 6px 12px 6px 6px; border-radius: 999px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s;
-  }
+  .user-badge { display: flex; align-items: center; gap: 10px; background: var(--card); padding: 6px 12px 6px 6px; border-radius: 999px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
   .user-badge:hover { border-color: var(--accent); }
-  .user-avatar {
-    width: 32px; height: 32px; background: var(--accent); color: #000;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 1rem; overflow: hidden;
-  }
+  .user-avatar { width: 32px; height: 32px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; overflow: hidden; }
   .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
   .page-view { display: none; min-height: 80vh; padding-bottom: 60px; }
   .page-view.active { display: block; animation: fadeIn 0.4s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* DASHBOARD */
   .dashboard-panel { display: none; max-width: 900px; margin: 40px auto 0; padding: 0 20px; }
-  .dashboard-card {
-    background: linear-gradient(145deg, var(--card), var(--card-hover));
-    border: 1px solid var(--border); border-radius: 20px; padding: 25px 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden;
-  }
-  .dashboard-card::before {
-    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  }
+  .dashboard-card { background: linear-gradient(145deg, var(--card), var(--card-hover)); border: 1px solid var(--border); border-radius: 20px; padding: 25px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+  .dashboard-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
   .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 15px; }
   .dash-item { display: flex; flex-direction: column; gap: 5px; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
   .dash-label { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
@@ -96,6 +76,7 @@
   .dash-value.usdt { color: var(--usdt-color); }
   .dash-value.transaksi { color: #fbbf24; }
 
+  /* HERO & PRODUK */
   .hero { max-width: 900px; margin: 0 auto; text-align: center; padding: 60px 20px 50px; }
   .hero h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.2; margin-bottom: 16px; font-weight: 800; }
   .hero h1 span { color: var(--accent); text-shadow: 0 0 15px rgba(255, 102, 178, 0.4); }
@@ -117,15 +98,12 @@
   .stock-info span { color: var(--text); font-weight: 700; }
   .card ul { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 26px; }
   .card ul li { position: relative; padding-left: 28px; font-size: 0.92rem; color: var(--muted); }
-  .card ul li::before {
-    content: ""; position: absolute; left: 0; top: 4px; width: 16px; height: 16px; background-color: var(--accent);
-    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat center;
-    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat center;
-  }
+  .card ul li::before { content: ""; position: absolute; left: 0; top: 4px; width: 16px; height: 16px; background-color: var(--accent); mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat center; -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat center; }
   .card .btn-buy { margin-top: auto; display: block; text-align: center; background: var(--accent); color: #000; font-weight: 800; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-size: 1rem; transition: 0.3s; }
   .card .btn-buy:hover { background: var(--accent-hover); box-shadow: 0 0 20px rgba(255, 102, 178, 0.4); }
 
-  .live-feed { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; }
+  /* LIVE FEED */
+  .live-feed { max-width: 1100px; margin: 0 auto; padding: 40px 20px 20px; }
   .feed-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; overflow: hidden; }
   .feed-marquee { display: flex; gap: 15px; animation: scroll 30s linear infinite; width: max-content; }
   .feed-marquee:hover { animation-play-state: paused; }
@@ -136,20 +114,40 @@
   .feed-price { font-size: 0.85rem; color: var(--usdt-color); font-weight: 800; }
   @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
+  /* ULASAN */
+  .reviews-section { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; }
+  .reviews-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  
+  .review-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; position: relative; animation: slideDown 0.4s ease; }
+  .review-stars { color: #fbbf24; font-size: 1.1rem; margin-bottom: 10px; display: flex; gap: 2px; }
+  .review-user { font-weight: 700; color: var(--accent); margin-bottom: 6px; font-size: 0.95rem; }
+  .review-text { color: var(--muted); font-size: 0.9rem; font-style: italic; }
+
+  /* MODAL ULASAN */
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100; }
+  .modal-overlay.active { display: flex; }
+  .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 20px; width: 100%; max-width: 420px; padding: 30px; position: relative; box-shadow: 0 10px 40px rgba(255, 102, 178, 0.2); animation: slideDown 0.3s ease; }
+  @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }
+  .close-btn:hover { color: var(--accent); }
+  .modal-content h2 { text-align: center; margin-bottom: 20px; color: var(--text); }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--muted); }
+  .form-control { width: 100%; padding: 14px 15px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text); font-size: 1rem; outline: none; transition: 0.3s; }
+  .form-control:focus { border-color: var(--accent); }
+  textarea.form-control { resize: vertical; min-height: 100px; }
+  .modal-btn { width: 100%; padding: 16px; border-radius: 10px; border: none; background: var(--accent); color: #000; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+  .modal-btn:hover { background: var(--accent-hover); }
+  .error-msg { color: #ff4444; font-size: 0.85rem; text-align: center; margin-bottom: 10px; display: none; padding: 10px; background: rgba(255,68,68,0.1); border-radius: 8px; }
+
+  /* FORM PAGE */
   .page-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
   .page-header { text-align: center; margin-bottom: 30px; }
   .page-header h2 { font-size: 2rem; color: var(--text); margin-bottom: 8px; }
   .page-header p { color: var(--muted); }
   .box-container { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
   
-  .form-group { margin-bottom: 20px; }
-  .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--muted); }
-  .form-control { width: 100%; padding: 14px 15px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text); font-size: 1rem; outline: none; transition: 0.3s; }
-  .form-control:focus { border-color: var(--accent); }
-  .modal-btn { width: 100%; padding: 16px; border-radius: 10px; border: none; background: var(--accent); color: #000; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; }
-  .modal-btn:hover { background: var(--accent-hover); }
-  .error-msg { color: #ff4444; font-size: 0.85rem; text-align: center; margin-bottom: 10px; display: none; padding: 10px; background: rgba(255,68,68,0.1); border-radius: 8px; }
-
   .topup-tabs { display: flex; gap: 10px; margin-bottom: 25px; background: var(--input-bg); padding: 5px; border-radius: 10px; }
   .topup-tab { flex: 1; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--muted); transition: 0.3s; }
   .topup-tab.active { background: var(--card); color: var(--accent); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
@@ -159,7 +157,7 @@
   .invoice-row span:last-child { font-weight: 700; color: var(--text); }
   .invoice-row.status span:last-child { color: #fbbf24; }
   .qris-image { width: 100%; max-width: 250px; border-radius: 10px; margin: 10px auto; display: block; border: 1px solid var(--border); }
-  .wallet-address { background: #000; border: 1px dashed var(--accent); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; word-break: break-all; text-align: center; margin: 10px 0; color: var(--accent); cursor: pointer; transition: 0.3s; }
+  .wallet-address { background: #000; border: 1px dashed var(--accent); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; word-break: break-all; text-align: center; margin: 10px 0; color: var(--accent); cursor: pointer; }
   .wallet-address:hover { background: rgba(255,102,178,0.1); }
   .crypto-methods { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
   .crypto-item { background: var(--input-bg); border: 1px solid var(--border); padding: 15px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
@@ -193,11 +191,13 @@
   @media (max-width: 768px) {
     .nav { flex-direction: column; gap: 10px; }
     .nav-right { justify-content: center; width: 100%; }
+    .reviews-header { flex-direction: column; text-align: center; }
   }
 </style>
 </head>
 <body>
 
+<div id="animatedBg"></div>
 <div id="browserProgressBar"></div>
 
 <header>
@@ -259,21 +259,21 @@
   
   <section class="products">
     <div class="card">
-      <div class="card-header"><h3 data-i18n="p1_title">Akun WhatsApp Meta One</h3><span class="sold-badge">⭐ Terjual 1K+</span></div>
+      <div class="card-header"><h3 data-i18n="p1_title">Akun WhatsApp Meta One</h3><span class="sold-badge" data-i18n="sold_1k">⭐ Terjual 1K+</span></div>
       <div class="price-container"><div class="price-idr">Rp 120.000</div><div class="price-usdt">7.5 USDT</div></div>
       <div class="stock-info"><span data-i18n="stock">Stok tersisa:</span> <span id="stock-p1">0</span></div>
       <ul><li data-i18n="p1_d1">Akun resmi siap pakai dengan nomor terverifikasi.</li><li data-i18n="p1_d2">Nomor disamarkan & dibuka otomatis.</li><li data-i18n="p1_d3">Login mudah via OTP.</li></ul>
       <button class="btn-buy" onclick="navigateTo('/beli/whatsapp-meta-one')" data-i18n="btn_buy">Beli Sekarang</button>
     </div>
     <div class="card">
-      <div class="card-header"><h3 data-i18n="p2_title">Email Perusahaan</h3><span class="sold-badge">⭐ Terjual 1K+</span></div>
+      <div class="card-header"><h3 data-i18n="p2_title">Email Perusahaan</h3><span class="sold-badge" data-i18n="sold_1k">⭐ Terjual 1K+</span></div>
       <div class="price-container"><div class="price-idr">Rp 450.000</div><div class="price-usdt">26 USDT</div></div>
       <div class="stock-info"><span data-i18n="stock">Stok tersisa:</span> <span id="stock-p2">0</span></div>
       <ul><li data-i18n="p2_d1">Full mailbox access.</li><li data-i18n="p2_d2">Masa aktif 2 Hari.</li><li data-i18n="p2_d3">Kredensial instan.</li></ul>
       <button class="btn-buy" onclick="navigateTo('/beli/email-perusahaan')" data-i18n="btn_buy">Beli Sekarang</button>
     </div>
     <div class="card">
-      <div class="card-header"><h3 data-i18n="p3_title">OTP Email</h3><span class="sold-badge">⭐ Terjual 1K+</span></div>
+      <div class="card-header"><h3 data-i18n="p3_title">OTP Email</h3><span class="sold-badge" data-i18n="sold_1k">⭐ Terjual 1K+</span></div>
       <div class="price-container"><div class="price-idr">Rp 110.000</div><div class="price-usdt">7 USDT</div></div>
       <div class="stock-info"><span data-i18n="stock">Stok tersisa:</span> <span id="stock-p3">0</span></div>
       <ul><li data-i18n="p3_d1">Email alias bisnis resmi.</li><li data-i18n="p3_d2">Masa aktif 2 Hari.</li></ul>
@@ -281,10 +281,53 @@
     </div>
   </section>
 
+  <!-- PRODUK TERJUAL -->
   <section class="live-feed">
     <h2 class="section-title" style="font-size: 1.5rem;" data-i18n="feed_title">Produk Terjual</h2>
     <div class="feed-container"><div class="feed-marquee" id="feedContainer"></div></div>
   </section>
+
+  <!-- ULASAN PELANGGAN -->
+  <section class="reviews-section">
+    <div class="reviews-header">
+      <div>
+        <h2 class="section-title" style="text-align:left; margin:0 0 5px 0; font-size: 1.5rem;" data-i18n="review_title">Ulasan Pelanggan</h2>
+        <p style="color: var(--muted); font-size: 0.9rem;" data-i18n="review_sub">Apa kata mereka setelah bertransaksi di GeoWS.</p>
+      </div>
+      <button class="btn-solid" onclick="bukaModalUlasan()" data-i18n="btn_write_review">Tulis Ulasan</button>
+    </div>
+
+    <div class="reviews-grid" id="reviewsContainer">
+      <!-- Ulasan akan dimuat di sini oleh JS -->
+    </div>
+  </section>
+</div>
+
+<!-- MODAL TULIS ULASAN -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('reviewModal')">&times;</button>
+    <h2 data-i18n="modal_review_title">Tulis Ulasan</h2>
+    <div class="error-msg" id="reviewError"></div>
+    
+    <form onsubmit="kirimUlasan(event)">
+      <div class="form-group">
+        <label data-i18n="label_rating">Rating (1-5 Bintang)</label>
+        <select id="revRating" class="form-control" required>
+          <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+          <option value="4">⭐⭐⭐⭐ (4/5)</option>
+          <option value="3">⭐⭐⭐ (3/5)</option>
+          <option value="2">⭐⭐ (2/5)</option>
+          <option value="1">⭐ (1/5)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="label_review_text">Ulasan Anda</label>
+        <textarea id="revText" class="form-control" required data-i18n-placeholder="placeholder_review" maxlength="200"></textarea>
+      </div>
+      <button type="submit" class="modal-btn" data-i18n="btn_send_review">Kirim Ulasan</button>
+    </form>
+  </div>
 </div>
 
 <!-- LOGIN -->
@@ -313,7 +356,7 @@
       <div class="error-msg" id="registerError"></div>
       <form onsubmit="handleRegister(event)">
         <div class="form-group"><label data-i18n="label_user">Username</label><input type="text" id="regUsername" class="form-control" required></div>
-        <div class="form-group"><label data-i18n="label_email">Email</label><input type="email" id="regEmail" class="form-control" required></div>
+        <div class="form-group"><label data-i18n="label_email">Email</label><input type="email" id="regEmail" class="form-control" required data-i18n-placeholder="placeholder_email"></div>
         <div class="form-group"><label data-i18n="label_pass">Password</label><input type="password" id="regPassword" class="form-control" required minlength="6"></div>
         <div class="form-group"><label data-i18n="label_conf">Konfirmasi Password</label><input type="password" id="regConfirmPassword" class="form-control" required minlength="6"></div>
         <button type="submit" class="modal-btn" data-i18n="btn_reg">Daftar</button>
@@ -370,7 +413,7 @@
         <div id="topup-idr-form">
           <div class="form-group">
             <label data-i18n="topup_nominal_idr">Nominal TopUp (Minimal Rp50.000)</label>
-            <input type="number" id="inputTopupIDR" class="form-control" placeholder="50000" min="50000">
+            <input type="number" id="inputTopupIDR" class="form-control" data-i18n-placeholder="placeholder_amount_idr" min="50000">
             <div class="error-msg" id="errTopupIDR"></div>
           </div>
           <button class="modal-btn" onclick="lanjutTopupIDR()" data-i18n="btn_next">Lanjutkan</button>
@@ -392,7 +435,7 @@
         <div id="topup-crypto-form">
           <div class="form-group">
             <label data-i18n="topup_nominal_usdt">Nominal TopUp (Minimal 1.0 USDT)</label>
-            <input type="number" id="inputTopupUSDT" class="form-control" placeholder="1.0" min="1" step="0.1">
+            <input type="number" id="inputTopupUSDT" class="form-control" data-i18n-placeholder="placeholder_amount_usdt" min="1" step="0.1">
             <div class="error-msg" id="errTopupUSDT"></div>
           </div>
           <button class="modal-btn" onclick="lanjutTopupCrypto1()" data-i18n="btn_next">Lanjutkan</button>
@@ -459,18 +502,20 @@
 </div>
 
 <script>
-  // ================= KAMUS TERJEMAHAN =================
+  // ================= KAMUS TERJEMAHAN LENGKAP =================
   const translations = {
     id: {
       nav_login: "Login", nav_register: "Daftar", btn_history: "Riwayat", btn_settings: "Akun", btn_topup: "Top Up",
       welcome_back: "Selamat datang kembali,", saldo_idr: "Saldo IDR", saldo_usdt: "Saldo USDT", total_trans: "Total Transaksi", kali: "Kali",
       hero_title: "Akun WhatsApp <span>Meta One</span> & Email Resmi",
       hero_desc: "Nomor terverifikasi, kredensial instan, dan akses penuh setelah pembayaran.",
-      prod_title: "Pilih Produk", prod_desc: "Semua produk dikirim otomatis setelah pembayaran dikonfirmasi.", btn_buy: "Beli Sekarang", stock: "Stok tersisa:",
+      prod_title: "Pilih Produk", prod_desc: "Semua produk dikirim otomatis setelah pembayaran dikonfirmasi.", btn_buy: "Beli Sekarang", stock: "Stok tersisa:", sold_1k: "⭐ Terjual 1K+",
       p1_title: "Akun WhatsApp Meta One", p1_d1: "Akun resmi siap pakai dengan nomor terverifikasi.", p1_d2: "Nomor disamarkan & dibuka otomatis.", p1_d3: "Login mudah via OTP.",
       p2_title: "Email Perusahaan", p2_d1: "Full mailbox access.", p2_d2: "Masa aktif 2 Hari.", p2_d3: "Kredensial instan.",
       p3_title: "OTP Email", p3_d1: "Email alias bisnis resmi.", p3_d2: "Masa aktif 2 Hari.",
-      feed_title: "Produk Terjual",
+      feed_title: "Produk Terjual", just_now: "Baru saja",
+      review_title: "Ulasan Pelanggan", review_sub: "Apa kata mereka setelah bertransaksi di GeoWS.", btn_write_review: "Tulis Ulasan",
+      modal_review_title: "Tulis Ulasan", label_rating: "Rating (1-5 Bintang)", label_review_text: "Ulasan Anda", btn_send_review: "Kirim Ulasan",
       login_title: "Login", login_sub: "Masuk ke akun GeoWS Anda.", label_email: "Email", label_pass: "Password", btn_login: "Masuk", no_acc: "Belum punya akun?",
       reg_title: "Daftar Akun", reg_sub: "Buat akun baru untuk mulai bertransaksi.", label_user: "Username", label_conf: "Konfirmasi Password", btn_reg: "Daftar", have_acc: "Sudah punya akun?",
       checkout_title: "Pembelian Produk", qty_label: "Jumlah (Maks. 10)", pay_method: "Metode Pembayaran", pay_idr: "Saldo IDR", pay_usdt: "Saldo USDT", unit_price: "Harga Satuan", btn_confirm: "Konfirmasi Pembayaran",
@@ -478,18 +523,31 @@
       topup_nominal_idr: "Nominal TopUp (Minimal Rp50.000)", topup_nominal_usdt: "Nominal TopUp (Minimal 1.0 USDT)", btn_next: "Lanjutkan",
       scan_qris: "Scan QRIS ini", transfer_amt: "Nominal Transfer", received_amt: "Saldo Diterima", status: "Status", select_net: "Pilih Jaringan", send_amt: "Jumlah Kirim",
       hist_title: "Riwayat Transaksi", hist_sub: "Daftar semua pembelian yang pernah Anda lakukan.",
-      settings_title: "Pengaturan Akun", settings_sub: "Kelola foto profil dan keamanan akun Anda.", change_pic: "Ubah Foto Profil (Pilih dari Galeri)", select_img: "Pilih Gambar...", save_pic: "Simpan Foto", reset_pass: "Reset Password", reset_desc: "Kami akan mengirimkan tautan reset password ke email Anda.", send_link: "Kirim Link Reset ke Email", btn_logout: "Keluar"
+      settings_title: "Pengaturan Akun", settings_sub: "Kelola foto profil dan keamanan akun Anda.", change_pic: "Ubah Foto Profil (Pilih dari Galeri)", select_img: "Pilih Gambar...", save_pic: "Simpan Foto", reset_pass: "Reset Password", reset_desc: "Kami akan mengirimkan tautan reset password ke email Anda.", send_link: "Kirim Link Reset ke Email", btn_logout: "Keluar",
+      placeholder_email: "email@contoh.com", placeholder_amount_idr: "Contoh: 50000", placeholder_amount_usdt: "Contoh: 1.0", placeholder_review: "Ceritakan pengalaman Anda...",
+      // ALERTS
+      alert_login_success: "Login berhasil!", alert_login_fail: "Email atau Password salah!", alert_reg_success: "Registrasi berhasil! Anda sudah login otomatis.", alert_reg_fail: "Gagal mendaftar: ", alert_email_in_use: "Email sudah terdaftar!", alert_pass_weak: "Password terlalu lemah (minimal 6 karakter).", alert_pass_mismatch: "Password tidak cocok!",
+      alert_topup_idr_min: "Minimal Top Up adalah Rp 50.000", alert_topup_usdt_min: "Minimal Top Up adalah 1.0 USDT", alert_select_net: "Silakan pilih jaringan terlebih dahulu.",
+      alert_insufficient_idr: "Saldo IDR tidak cukup! Sisa: Rp ", alert_insufficient_usdt: "Saldo USDT tidak cukup! Sisa: ",
+      alert_buy_success: "Pembayaran Berhasil!\n\nAnda membeli ", alert_buy_fail: "Terjadi kesalahan sistem: ",
+      alert_review_login: "Silakan Login terlebih dahulu untuk menulis ulasan.", alert_review_buy: "Anda harus melakukan minimal 1 transaksi berhasil sebelum dapat menulis ulasan.",
+      alert_review_success: "Ulasan berhasil dikirim! Terima kasih.", alert_review_fail: "Gagal mengirim ulasan: ",
+      alert_copied: "Tersalin!", alert_logout: "Anda telah keluar.",
+      // GEN Z REVIEWS ID
+      rev_1: "Goks sih ini cepet bgt responnya 🔥", rev_2: "Wah mantap, akunnya langsung bisa dipake 🗿", rev_3: "Auto langganan pokoknya!", rev_4: "Harga murah, kualitas gak murahan 💯", rev_5: "Gak nyesel beli disini, amanah!", rev_6: "Bintang 5 deh buat adminnya ⭐", rev_7: "Awalnya ragu, eh ternyata beneran woy 😭", rev_8: "Prosesnya kilat bgt wkwk"
     },
     en: {
       nav_login: "Login", nav_register: "Register", btn_history: "History", btn_settings: "Account", btn_topup: "Top Up",
       welcome_back: "Welcome back,", saldo_idr: "IDR Balance", saldo_usdt: "USDT Balance", total_trans: "Total Transactions", kali: "Times",
       hero_title: "Official <span>Meta One</span> WhatsApp Accounts & Emails",
       hero_desc: "Verified numbers, instant credentials, and full access after payment.",
-      prod_title: "Choose Product", prod_desc: "All products are delivered automatically after payment confirmation.", btn_buy: "Buy Now", stock: "Stock left:",
+      prod_title: "Choose Product", prod_desc: "All products are delivered automatically after payment confirmation.", btn_buy: "Buy Now", stock: "Stock left:", sold_1k: "⭐ Sold 1K+",
       p1_title: "Meta One WhatsApp Account", p1_d1: "Official account ready to use with verified number.", p1_d2: "Number masked & opens automatically.", p1_d3: "Easy login via OTP.",
       p2_title: "Company Email", p2_d1: "Full mailbox access.", p2_d2: "Active for 2 Days.", p2_d3: "Instant credentials.",
       p3_title: "Email OTP", p3_d1: "Official business alias email.", p3_d2: "Active for 2 Days.",
-      feed_title: "Sold Products",
+      feed_title: "Sold Products", just_now: "Just now",
+      review_title: "Customer Reviews", review_sub: "What they say after trading on GeoWS.", btn_write_review: "Write Review",
+      modal_review_title: "Write Review", label_rating: "Rating (1-5 Stars)", label_review_text: "Your Review", btn_send_review: "Send Review",
       login_title: "Login", login_sub: "Sign in to your GeoWS account.", label_email: "Email", label_pass: "Password", btn_login: "Sign In", no_acc: "Don't have an account?",
       reg_title: "Register Account", reg_sub: "Create a new account to start trading.", label_user: "Username", label_conf: "Confirm Password", btn_reg: "Register", have_acc: "Already have an account?",
       checkout_title: "Product Checkout", qty_label: "Quantity (Max. 10)", pay_method: "Payment Method", pay_idr: "IDR Balance", pay_usdt: "USDT Balance", unit_price: "Unit Price", btn_confirm: "Confirm Payment",
@@ -497,18 +555,31 @@
       topup_nominal_idr: "TopUp Amount (Min. Rp50,000)", topup_nominal_usdt: "TopUp Amount (Min. 1.0 USDT)", btn_next: "Continue",
       scan_qris: "Scan this QRIS", transfer_amt: "Transfer Amount", received_amt: "Received Balance", status: "Status", select_net: "Select Network", send_amt: "Send Amount",
       hist_title: "Transaction History", hist_sub: "List of all purchases you've made.",
-      settings_title: "Account Settings", settings_sub: "Manage your profile picture and account security.", change_pic: "Change Profile Photo (Select from Gallery)", select_img: "Select Image...", save_pic: "Save Photo", reset_pass: "Reset Password", reset_desc: "We will send a password reset link to your email.", send_link: "Send Reset Link to Email", btn_logout: "Logout"
+      settings_title: "Account Settings", settings_sub: "Manage your profile picture and account security.", change_pic: "Change Profile Photo (Select from Gallery)", select_img: "Select Image...", save_pic: "Save Photo", reset_pass: "Reset Password", reset_desc: "We will send a password reset link to your email.", send_link: "Send Reset Link to Email", btn_logout: "Logout",
+      placeholder_email: "email@example.com", placeholder_amount_idr: "e.g., 50000", placeholder_amount_usdt: "e.g., 1.0", placeholder_review: "Tell us your experience...",
+      // ALERTS
+      alert_login_success: "Login successful!", alert_login_fail: "Incorrect Email or Password!", alert_reg_success: "Registration successful! You are logged in automatically.", alert_reg_fail: "Failed to register: ", alert_email_in_use: "Email is already registered!", alert_pass_weak: "Password too weak (min 6 chars).", alert_pass_mismatch: "Passwords do not match!",
+      alert_topup_idr_min: "Minimum Top Up is Rp 50,000", alert_topup_usdt_min: "Minimum Top Up is 1.0 USDT", alert_select_net: "Please select a network first.",
+      alert_insufficient_idr: "Insufficient IDR balance! Left: Rp ", alert_insufficient_usdt: "Insufficient USDT balance! Left: ",
+      alert_buy_success: "Payment Successful!\n\nYou bought ", alert_buy_fail: "System error: ",
+      alert_review_login: "Please Login first to write a review.", alert_review_buy: "You must have at least 1 successful transaction to write a review.",
+      alert_review_success: "Review sent successfully! Thank you.", alert_review_fail: "Failed to send review: ",
+      alert_copied: "Copied!", alert_logout: "You have been logged out.",
+      // GEN Z REVIEWS EN
+      rev_1: "No cap, this is fast af 🔥", rev_2: "Bet! The account works instantly 🗿", rev_3: "Fr fr, I'm a regular now!", rev_4: "Cheap but high quality 💯", rev_5: "No regrets buying here, legit!", rev_6: "5 stars for the admin ⭐", rev_7: "Lowkey was skeptical, but it's real 😭", rev_8: "Process was fast wkwk"
     },
     zh: {
       nav_login: "登录", nav_register: "注册", btn_history: "历史记录", btn_settings: "账号", btn_topup: "充值",
       welcome_back: "欢迎回来，", saldo_idr: "印尼盾余额", saldo_usdt: "USDT余额", total_trans: "总交易次数", kali: "次",
       hero_title: "官方 <span>Meta One</span> WhatsApp 账号与邮箱",
       hero_desc: "已验证号码，即时凭证，付款后即可完全访问。",
-      prod_title: "选择产品", prod_desc: "所有产品在确认付款后自动发货。", btn_buy: "立即购买", stock: "剩余库存：",
+      prod_title: "选择产品", prod_desc: "所有产品在确认付款后自动发货。", btn_buy: "立即购买", stock: "剩余库存：", sold_1k: "⭐ 已售1K+",
       p1_title: "Meta One WhatsApp 账号", p1_d1: "官方账号，即买即用，号码已验证。", p1_d2: "目录中号码隐藏，付款后自动显示。", p1_d3: "通过 OTP 轻松登录。",
       p2_title: "企业邮箱", p2_d1: "完整邮箱访问权限。", p2_d2: "有效期2天。", p2_d3: "即时凭证。",
       p3_title: "OTP 邮箱", p3_d1: "官方企业别名邮箱。", p3_d2: "有效期2天。",
-      feed_title: "已售产品",
+      feed_title: "已售产品", just_now: "刚刚",
+      review_title: "客户评价", review_sub: "他们在 GeoWS 交易后的感受。", btn_write_review: "写评价",
+      modal_review_title: "写评价", label_rating: "评分 (1-5 星)", label_review_text: "您的评价", btn_send_review: "发送评价",
       login_title: "登录", login_sub: "登录您的 GeoWS 账号。", label_email: "邮箱", label_pass: "密码", btn_login: "登录", no_acc: "还没有账号？",
       reg_title: "注册账号", reg_sub: "创建一个新账号开始交易。", label_user: "用户名", label_conf: "确认密码", btn_reg: "注册", have_acc: "已有账号？",
       checkout_title: "产品结算", qty_label: "数量（最多10个）", pay_method: "支付方式", pay_idr: "印尼盾余额", pay_usdt: "USDT余额", unit_price: "单价", btn_confirm: "确认支付",
@@ -516,7 +587,18 @@
       topup_nominal_idr: "充值金额（最低 50,000 印尼盾）", topup_nominal_usdt: "充值金额（最低 1.0 USDT）", btn_next: "继续",
       scan_qris: "扫描此 QRIS", transfer_amt: "转账金额", received_amt: "收到余额", status: "状态", select_net: "选择网络", send_amt: "发送金额",
       hist_title: "交易记录", hist_sub: "您所有购买记录的列表。",
-      settings_title: "账号设置", settings_sub: "管理您的头像和账号安全。", change_pic: "更改头像（从相册选择）", select_img: "选择图片...", save_pic: "保存头像", reset_pass: "重置密码", reset_desc: "我们将向您的邮箱发送密码重置链接。", send_link: "发送重置链接到邮箱", btn_logout: "退出"
+      settings_title: "账号设置", settings_sub: "管理您的头像和账号安全。", change_pic: "更改头像（从相册选择）", select_img: "选择图片...", save_pic: "保存头像", reset_pass: "重置密码", reset_desc: "我们将向您的邮箱发送密码重置链接。", send_link: "发送重置链接到邮箱", btn_logout: "退出",
+      placeholder_email: "邮箱@示例.com", placeholder_amount_idr: "例如：50000", placeholder_amount_usdt: "例如：1.0", placeholder_review: "告诉我们您的体验...",
+      // ALERTS
+      alert_login_success: "登录成功！", alert_login_fail: "邮箱或密码错误！", alert_reg_success: "注册成功！已自动登录。", alert_reg_fail: "注册失败：", alert_email_in_use: "该邮箱已被注册！", alert_pass_weak: "密码太弱（至少6个字符）。", alert_pass_mismatch: "两次输入的密码不一致！",
+      alert_topup_idr_min: "最低充值金额为 50,000 印尼盾", alert_topup_usdt_min: "最低充值金额为 1.0 USDT", alert_select_net: "请先选择网络。",
+      alert_insufficient_idr: "印尼盾余额不足！剩余：Rp ", alert_insufficient_usdt: "USDT余额不足！剩余：",
+      alert_buy_success: "支付成功！\n\n您购买了 ", alert_buy_fail: "系统错误：",
+      alert_review_login: "请先登录后再写评价。", alert_review_buy: "您必须至少有1次成功交易才能写评价。",
+      alert_review_success: "评价发送成功！谢谢。", alert_review_fail: "发送评价失败：",
+      alert_copied: "已复制！", alert_logout: "您已退出登录。",
+      // GEN Z REVIEWS ZH
+      rev_1: "太快了叭，直接秒发号 🔥", rev_2: "绝绝子，号码直接能用 🗿", rev_3: "疯狂回购，家人们谁懂啊！", rev_4: "便宜又大碗，质量杠杠的 💯", rev_5: "不踩雷，老板人超好！", rev_6: "必须给管理五星好评 ⭐", rev_7: "本来还犹豫，结果真香了 😭", rev_8: "流程丝滑得一批 wkwk"
     }
   };
 
@@ -524,6 +606,8 @@
 
   window.changeLang = (lang, event) => {
     currentLang = lang;
+    
+    // Terjemahkan elemen teks biasa
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (translations[lang][key]) {
@@ -534,9 +618,30 @@
         }
       }
     });
+
+    // Terjemahkan Placeholder pada input form
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (translations[lang][key]) {
+        el.setAttribute('placeholder', translations[lang][key]);
+      }
+    });
+
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
     event.currentTarget.classList.add('active');
+
+    loadUlasan(); 
   };
+
+  // ================= BACKGROUND PARALLAX (MOUSE MOVE) =================
+  document.addEventListener('mousemove', (e) => {
+    const bg = document.getElementById('animatedBg');
+    if (!bg) return;
+    // Hitung pergerakan berdasarkan posisi mouse dari tengah layar
+    const x = (e.clientX / window.innerWidth - 0.5) * 30; 
+    const y = (e.clientY / window.innerHeight - 0.5) * 30;
+    bg.style.transform = `translate(${x}px, ${y}px)`;
+  });
 
   // ================= LOGIKA ROUTING & LOADING =================
   const progressBar = document.getElementById('browserProgressBar');
@@ -629,7 +734,7 @@
     }
     
     if(!window.firebaseAuth || !window.firebaseAuth.currentUser) {
-      alert("Silakan Login terlebih dahulu.");
+      alert(translations[currentLang].alert_review_login);
       navigateTo('/login');
       return;
     }
@@ -651,6 +756,22 @@
   }
   generateStock();
 
+  const chineseChars = ['王', '李', '张', '刘', '陈', '杨', '赵', '黄', '周', '吴', '徐', '孙', '马', '朱', '胡'];
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+
+  function generateRandomName() {
+    const starsLength = Math.floor(Math.random() * 6) + 1;
+    if (Math.random() < 0.5) {
+      const randomChar = chineseChars[Math.floor(Math.random() * chineseChars.length)];
+      return randomChar + '*'.repeat(starsLength);
+    } else {
+      const nameLength = Math.floor(Math.random() * 3) + 1;
+      let name = '';
+      for (let j = 0; j < nameLength; j++) name += alphabet[Math.floor(Math.random() * alphabet.length)];
+      return name + '*'.repeat(starsLength);
+    }
+  }
+
   function generateLiveFeed() {
     const container = document.getElementById('feedContainer');
     const products = [
@@ -658,15 +779,10 @@
       { name: 'Email Perusahaan', priceIDR: 450000, priceUSDT: 26 },
       { name: 'OTP Email', priceIDR: 110000, priceUSDT: 7 }
     ];
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    
     let html = '';
     for (let i = 0; i < 15; i++) {
-      const nameLength = Math.floor(Math.random() * 3) + 1;
-      const starsLength = Math.floor(Math.random() * 6) + 1;
-      let buyerName = '';
-      for (let j = 0; j < nameLength; j++) buyerName += alphabet[Math.floor(Math.random() * alphabet.length)];
-      buyerName += '*'.repeat(starsLength);
-
+      const buyerName = generateRandomName();
       const randomProduct = products[Math.floor(Math.random() * products.length)];
       const qty = Math.floor(Math.random() * 10) + 1;
       const isIDR = Math.random() > 0.5;
@@ -674,7 +790,7 @@
 
       html += `
         <div class="feed-item">
-          <div class="feed-item-header"><span class="feed-name">${buyerName}</span><span>Baru saja</span></div>
+          <div class="feed-item-header"><span class="feed-name">${buyerName}</span><span data-i18n="just_now">${translations[currentLang].just_now}</span></div>
           <div class="feed-detail">${randomProduct.name}</div>
           <div class="feed-price">${qty} Item - ${priceStr}</div>
         </div>
@@ -683,6 +799,27 @@
     container.innerHTML = html + html;
   }
   generateLiveFeed();
+
+  // ================= LOGIKA ULASAN =================
+  window.bukaModalUlasan = () => {
+    if (!window.firebaseAuth || !window.firebaseAuth.currentUser) {
+      alert(translations[currentLang].alert_review_login);
+      navigateTo('/login');
+      return;
+    }
+    
+    if (!currentUserData || !currentUserData.totalTransaksi || currentUserData.totalTransaksi === 0) {
+      alert(translations[currentLang].alert_review_buy);
+      return;
+    }
+
+    document.getElementById('reviewError').style.display = 'none';
+    document.getElementById('revText').value = '';
+    document.getElementById('revRating').value = '5';
+    document.getElementById('reviewModal').classList.add('active');
+  };
+
+  window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 
   // ================= TOPUP =================
   window.switchTopupTab = (type) => {
@@ -719,7 +856,7 @@
   window.lanjutTopupIDR = () => {
     const nominal = parseInt(document.getElementById('inputTopupIDR').value);
     const err = document.getElementById('errTopupIDR');
-    if (!nominal || nominal < 50000) { err.style.display = 'block'; err.innerText = "Minimal Top Up adalah Rp 50.000"; return; }
+    if (!nominal || nominal < 50000) { err.style.display = 'block'; err.innerText = translations[currentLang].alert_topup_idr_min; return; }
     err.style.display = 'none';
     document.getElementById('topup-idr-form').style.display = 'none';
     document.getElementById('topup-idr-invoice').style.display = 'block';
@@ -739,7 +876,7 @@
   window.lanjutTopupCrypto1 = () => {
     const nominal = parseFloat(document.getElementById('inputTopupUSDT').value);
     const err = document.getElementById('errTopupUSDT');
-    if (!nominal || nominal < 1.0) { err.style.display = 'block'; err.innerText = "Minimal Top Up adalah 1.0 USDT"; return; }
+    if (!nominal || nominal < 1.0) { err.style.display = 'block'; err.innerText = translations[currentLang].alert_topup_usdt_min; return; }
     err.style.display = 'none';
     nominalUSDT = nominal;
     document.getElementById('topup-crypto-form').style.display = 'none';
@@ -748,7 +885,7 @@
 
   window.lanjutTopupCrypto2 = () => {
     const err = document.getElementById('errTopupCryptoNet');
-    if (!selectedNetwork) { err.style.display = 'block'; err.innerText = "Silakan pilih jaringan terlebih dahulu."; return; }
+    if (!selectedNetwork) { err.style.display = 'block'; err.innerText = translations[currentLang].alert_select_net; return; }
     err.style.display = 'none';
     document.getElementById('topup-crypto-network').style.display = 'none';
     document.getElementById('topup-crypto-invoice').style.display = 'block';
@@ -764,7 +901,7 @@
     navigator.clipboard.writeText(text).then(() => {
       const originalBg = el.style.background;
       el.style.background = 'rgba(38, 161, 123, 0.2)';
-      el.innerText = "Tersalin!";
+      el.innerText = translations[currentLang].alert_copied;
       setTimeout(() => { el.style.background = originalBg; el.innerText = text; }, 1500);
     });
   };
@@ -774,7 +911,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, collection, addDoc, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, collection, addDoc, query, orderBy, getDocs, limit, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCXI6kfx_2vLT3eJcPEjYGtRKYTPbbfSis",
@@ -795,6 +932,161 @@
 
   let currentUserData = null; 
   let selectedMethod = "IDR";
+
+  const dummyNamesChinese = ['王**', '李***', '张*', '刘****', '陈**', '杨***', '赵*', '黄****'];
+  const dummyNamesLatin = ['b***', 'j**', 'a*****', 'r**', 's***', 'm****', 'd***', 'k**'];
+  const revKeys = ['rev_1', 'rev_2', 'rev_3', 'rev_4', 'rev_5', 'rev_6', 'rev_7', 'rev_8'];
+
+  // ================= LOAD ULASAN DARI DATABASE =================
+  async function loadUlasan() {
+    const container = document.getElementById('reviewsContainer');
+    container.innerHTML = '<p style="text-align:center; color:var(--muted); grid-column: 1/-1;">Memuat ulasan...</p>';
+
+    try {
+      const q = query(collection(db, "reviews"), orderBy("date", "desc"), limit(10));
+      const querySnapshot = await getDocs(q);
+      
+      container.innerHTML = '';
+      
+      for(let i=0; i<3; i++) {
+          const randomKey = revKeys[Math.floor(Math.random() * revKeys.length)];
+          const isChinese = Math.random() < 0.4;
+          let displayName, displayText;
+          
+          if (isChinese) {
+              displayName = dummyNamesChinese[Math.floor(Math.random() * dummyNamesChinese.length)];
+              displayText = translations['zh'][randomKey];
+          } else {
+              displayName = dummyNamesLatin[Math.floor(Math.random() * dummyNamesLatin.length)];
+              displayText = translations[currentLang][randomKey];
+          }
+          
+          container.insertAdjacentHTML('beforeend', `
+              <div class="review-card">
+                <div class="review-stars">★★★★★</div>
+                <div class="review-user">${displayName}</div>
+                <div class="review-text">"${displayText}"</div>
+              </div>
+          `);
+      }
+
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        let starsHtml = '';
+        for(let i=0; i<5; i++) {
+          starsHtml += i < data.rating ? '★' : '☆';
+        }
+        
+        container.insertAdjacentHTML('beforeend', `
+          <div class="review-card">
+            <div class="review-stars">${starsHtml}</div>
+            <div class="review-user">${data.username}</div>
+            <div class="review-text">"${data.text}"</div>
+          </div>
+        `);
+      });
+      
+      while (container.children.length > 10) {
+          container.lastElementChild.remove();
+      }
+
+    } catch (error) {
+      console.error("Firebase Error:", error);
+      container.innerHTML = `<p style="text-align:center; color:#ff4444; grid-column: 1/-1;">Gagal memuat ulasan: ${error.message}</p>`;
+    }
+  }
+
+  function addLiveReview() {
+    const container = document.getElementById('reviewsContainer');
+    if(!container) return;
+
+    const randomKey = revKeys[Math.floor(Math.random() * revKeys.length)];
+    const randomRating = Math.random() > 0.3 ? 5 : 4; 
+    
+    let starsHtml = '';
+    for(let i=0; i<5; i++) starsHtml += i < randomRating ? '★' : '☆';
+
+    const isChinese = Math.random() < 0.4;
+    let displayName, displayText;
+    
+    if (isChinese) {
+        displayName = dummyNamesChinese[Math.floor(Math.random() * dummyNamesChinese.length)];
+        displayText = translations['zh'][randomKey];
+    } else {
+        displayName = dummyNamesLatin[Math.floor(Math.random() * dummyNamesLatin.length)];
+        displayText = translations[currentLang][randomKey] || translations['id'][randomKey];
+    }
+    
+    const newCard = document.createElement('div');
+    newCard.className = 'review-card';
+    newCard.style.animation = 'fadeIn 0.5s ease';
+    newCard.innerHTML = `
+        <div class="review-stars">${starsHtml}</div>
+        <div class="review-user">${displayName}</div>
+        <div class="review-text">"${displayText}"</div>
+    `;
+    
+    if(container.children.length === 1 && container.children[0].tagName === 'P') {
+        container.innerHTML = '';
+    }
+    
+    container.prepend(newCard);
+    
+    if(container.children.length > 10) {
+        container.lastElementChild.remove();
+    }
+  }
+
+  function scheduleNextFakeReview() {
+      const delay = Math.floor(Math.random() * 5000) + 5000; 
+      setTimeout(() => {
+          addLiveReview();
+          scheduleNextFakeReview();
+      }, delay);
+  }
+
+  // ================= KIRIM ULASAN KE DATABASE =================
+  window.kirimUlasan = async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const rating = parseInt(document.getElementById('revRating').value);
+    const text = document.getElementById('revText').value;
+    const errEl = document.getElementById('reviewError');
+    
+    const username = currentUserData.username;
+    const censoredName = username.length > 2 ? username.substring(0, 1) + '***' + username.slice(-1) : username + '**';
+
+    try {
+      const reviewsRef = collection(db, "reviews");
+      
+      await addDoc(reviewsRef, {
+        username: censoredName,
+        rating: rating,
+        text: text,
+        date: serverTimestamp(),
+        uid: user.uid
+      });
+
+      const q = query(reviewsRef, orderBy("date", "desc"));
+      const snap = await getDocs(q);
+      if (snap.size > 20) {
+        const docsToDelete = snap.docs.slice(20);
+        for (const d of docsToDelete) {
+            await deleteDoc(doc(db, "reviews", d.id));
+        }
+      }
+
+      alert(translations[currentLang].alert_review_success);
+      closeModal('reviewModal');
+      loadUlasan(); 
+      
+    } catch (error) {
+      errEl.style.display = 'block';
+      errEl.innerText = translations[currentLang].alert_review_fail + error.message;
+    }
+  };
 
   // ================= CHECKOUT LOGIC =================
   window.ubahQty = (val) => {
@@ -857,11 +1149,11 @@
 
     if (selectedMethod === 'IDR' && currentSaldoIDR < totalIDR) {
       errEl.style.display = 'block';
-      errEl.innerHTML = `Saldo IDR tidak cukup! Sisa: Rp ${currentSaldoIDR.toLocaleString('id-ID')}. <br><a href="#" onclick="navigateTo('/topup/idr')" style="color:#fff; font-weight:bold; text-decoration:underline;">Top Up</a>`;
+      errEl.innerHTML = `${translations[currentLang].alert_insufficient_idr}${currentSaldoIDR.toLocaleString('id-ID')}. <br><a href="#" onclick="navigateTo('/topup/idr')" style="color:#fff; font-weight:bold; text-decoration:underline;">Top Up</a>`;
       return;
     } else if (selectedMethod === 'USDT' && currentSaldoUSDT < totalUSDT) {
       errEl.style.display = 'block';
-      errEl.innerHTML = `Saldo USDT tidak cukup! Sisa: ${currentSaldoUSDT.toFixed(2)} USDT. <br><a href="#" onclick="navigateTo('/topup/usdt')" style="color:#fff; font-weight:bold; text-decoration:underline;">Top Up</a>`;
+      errEl.innerHTML = `${translations[currentLang].alert_insufficient_usdt}${currentSaldoUSDT.toFixed(2)} USDT. <br><a href="#" onclick="navigateTo('/topup/usdt')" style="color:#fff; font-weight:bold; text-decoration:underline;">Top Up</a>`;
       return;
     }
 
@@ -882,7 +1174,7 @@
         method: selectedMethod, date: serverTimestamp()
       });
 
-      alert(`Pembayaran Berhasil!\n\nAnda membeli ${qty} ${currentProductObj.name}.`);
+      alert(`${translations[currentLang].alert_buy_success}${qty} ${currentProductObj.name}.`);
       navigateTo('/riwayat');
       
       const telegramUser = "Geo_WS"; 
@@ -892,9 +1184,9 @@
       await fetchUserData(user.uid);
     } catch (error) {
       errEl.style.display = 'block';
-      errEl.innerText = "Terjadi kesalahan sistem: " + error.message;
+      errEl.innerText = translations[currentLang].alert_buy_fail + error.message;
     } finally {
-      btnConfirm.innerText = "Konfirmasi Pembayaran";
+      btnConfirm.innerText = translations[currentLang].btn_confirm;
       btnConfirm.disabled = false;
     }
   };
@@ -914,7 +1206,7 @@
 
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
-        const dateStr = data.date ? data.date.toDate().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : 'Baru saja';
+        const dateStr = data.date ? data.date.toDate().toLocaleString(currentLang === 'id' ? 'id-ID' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' }) : 'Baru saja';
         const isIDR = data.method === 'IDR';
         const totalStr = isIDR ? `Rp ${data.total.toLocaleString('id-ID')}` : `${data.total.toFixed(2)} USDT`;
         listEl.insertAdjacentHTML('beforeend', `
@@ -999,16 +1291,16 @@
     const confirmPass = document.getElementById('regConfirmPassword').value;
     const errEl = document.getElementById('registerError');
     
-    if (password !== confirmPass) { errEl.style.display = 'block'; errEl.innerText = "Password tidak cocok!"; return; }
+    if (password !== confirmPass) { errEl.style.display = 'block'; errEl.innerText = translations[currentLang].alert_pass_mismatch; return; }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await setDoc(doc(db, "users", userCredential.user.uid), { username, email, saldo: 0, saldoUSDT: 0.00, totalTransaksi: 0, photoURL: "" });
-      alert("Registrasi berhasil!");
+      alert(translations[currentLang].alert_reg_success);
       navigateTo('/');
     } catch (error) {
       errEl.style.display = 'block'; 
-      errEl.innerText = error.code === 'auth/email-already-in-use' ? "Email sudah terdaftar!" : "Gagal mendaftar: " + error.message;
+      errEl.innerText = error.code === 'auth/email-already-in-use' ? translations[currentLang].alert_email_in_use : translations[currentLang].alert_reg_fail + error.message;
     }
   };
 
@@ -1020,17 +1312,17 @@
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login berhasil!");
+      alert(translations[currentLang].alert_login_success);
       navigateTo('/');
     } catch (error) {
-      errEl.style.display = 'block'; errEl.innerText = "Email atau Password salah!";
+      errEl.style.display = 'block'; errEl.innerText = translations[currentLang].alert_login_fail;
     }
   };
 
   window.handleLogout = async () => {
     await signOut(auth);
     navigateTo('/');
-    alert("Anda telah keluar.");
+    alert(translations[currentLang].alert_logout);
   };
 
   onAuthStateChanged(auth, async (user) => {
@@ -1049,6 +1341,11 @@
       userArea.style.display = 'none';
       dashboardPanel.style.display = 'none';
     }
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    loadUlasan();
+    scheduleNextFakeReview();
   });
 </script>
 
